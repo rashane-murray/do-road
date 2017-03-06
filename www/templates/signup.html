@@ -1,5 +1,38 @@
-<ion-view view-title="Signup">
-  <ion-content>
-    <h1>Signup</h1>
+<ion-view title="Sign Up">
+  <ion-content padding="true" class="has-header">
+    <form id="signUp-form1" class="list">
+      <label class="item item-input" id="signUp-input4">
+        <span class="input-label">Email</span>
+        <input type="email" placeholder="">
+      </label>
+      <label class="item item-input" id="signUp-input5">
+        <span class="input-label">Password</span>
+        <input type="password" placeholder="">
+      </label>
+      <label class="item item-input" id="signUp-input6">
+        <span class="input-label">Phone</span>
+        <input type="text" placeholder="">
+      </label>
+      <div class="spacer" style="width: 300px; height: 44px;"></div>
+    </form>
+    <form id="signUp-form2" class="list">
+      <label class="item item-input" id="signUp-input2" name="firstName">
+        <span class="input-label">First Name</span>
+        <input type="text" placeholder="">
+      </label>
+      <label class="item item-input" id="signUp-input3" name="lastName">
+        <span class="input-label">Last Name</span>
+        <input type="text" placeholder="">
+      </label>
+      <label class="item item-select" id="signUp-select1">
+        <span class="input-label">Vehicle Type</span>
+        <select>
+          <option>Car</option>
+          <option>MiniBus</option>
+        </select>
+      </label>
+      <div class="spacer" style="width: 300px; height: 44px;"></div>
+    </form>
+    <button id="signUp-button1" class="button button-positive  button-block" ng-click="signUp()">Sign Up</button>
   </ion-content>
 </ion-view>
