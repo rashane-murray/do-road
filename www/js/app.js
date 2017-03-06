@@ -1,7 +1,8 @@
-angular.module('doroad', 
+angular.module('doroad',
   [
-    'ionic', 
+    'ionic',
     'doroad.controllers',
+    'doroad.routes',
     'ngCordova'
   ])
 
@@ -15,43 +16,4 @@ angular.module('doroad',
       StatusBar.styleDefault();
     }
   });
-})
-
-.config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
-    .state('app', {
-    url: '/app',
-    abstract: true,
-    templateUrl: 'templates/menu.html',
-    controller: 'MainCtrl'
-  })
-  .state('app.main', {
-    url: '/main',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/main.html',
-        controller: 'MainCtrl'
-      }
-    }
-  })
-  .state('app.signup', {
-      url: '/signup',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/signup.html',
-          controller: 'SignUpCtrl'
-        }
-      }
-    })
-  .state('app.login', {
-    url: '/login',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/login.html',
-        controller: 'LoginCtrl'
-      }
-    }
-  });
-  //Only in Dev set to main
-  $urlRouterProvider.otherwise('/app/main');
 });
