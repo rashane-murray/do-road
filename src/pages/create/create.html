@@ -1,0 +1,52 @@
+<ion-header>
+	<ion-navbar color="tax">
+		<ion-title>
+			DoRoad Sign Up
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-list>
+
+		<ion-item>
+			<ion-label floating>First Name</ion-label>
+			<ion-input type="text" [(ngModel)]="name"></ion-input>
+		</ion-item>
+
+		<ion-item>
+			<ion-label floating>Last Name</ion-label>
+			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
+		</ion-item>
+
+		
+
+		<ion-item>
+			<ion-label floating>Password</ion-label>
+			<ion-input type="password" [(ngModel)]="passwo"></ion-input>
+		</ion-item>
+
+		
+
+		<ion-item>
+			<ion-label floating>Email</ion-label>
+			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
+		</ion-item>
+
+		<ion-item>
+			<ion-label floating>Telephone Number</ion-label>
+			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
+		</ion-item>
+
+		<ion-item>
+			<ion-label floating>TRN/Driver's License</ion-label>
+			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
+		</ion-item>
+
+		
+
+<ion-item>
+			<button ion-button color="dark" (click)='check()'> Create Account </button>
+		</ion-item>
+	</ion-list>
+</ion-content>
