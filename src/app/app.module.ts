@@ -4,13 +4,18 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Create } from '../pages/create/create';
 import { SignIn } from '../pages/signIn/signIn';
+import { RoadMap } from '../pages/map/map';
+import { UserPage } from '../pages/userPage/userPage';
 import { GooglePlus } from '@ionic-native/google-plus';
-import { NativeStorage } from '@ionic-native/native-storage';
-import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook';
+import { GoogleMaps } from '@ionic-native/google-maps';
+import { Geolocation } from '@ionic-native/geolocation';
+import { UserProvider } from '../providers/user/user';
+
 
 
 @NgModule({
@@ -18,7 +23,9 @@ import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook';
     MyApp,
     HomePage,
     Create,
-    SignIn
+    SignIn,
+    RoadMap,
+    UserPage
   ],
   imports: [
     BrowserModule,
@@ -29,19 +36,21 @@ import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook';
     MyApp,
     HomePage,
     Create,
-    SignIn
+    SignIn,
+    RoadMap,
+    UserPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     GooglePlus,
-    NativeStorage,
-    Facebook
-     
-    
+    GoogleMaps,
+    Geolocation,
+    RoadMap,
+    UserProvider
+
+
   ]
 })
 export class AppModule {}
-
-

@@ -10,43 +10,43 @@
 	<ion-list>
 
 		<ion-item>
-			<ion-label floating>First Name</ion-label>
-			<ion-input type="text" [(ngModel)]="name"></ion-input>
+			<ion-label floating [style.color]="fCol">First Name</ion-label>
+			<ion-input type="text" [(ngModel)]="fName"></ion-input>
 		</ion-item>
 
 		<ion-item>
-			<ion-label floating>Last Name</ion-label>
-			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
+			<ion-label floating [style.color]="lCol">Last Name</ion-label>
+			<ion-input type="text" [(ngModel)]="lName"></ion-input>
 		</ion-item>
 
-		
+
 
 		<ion-item>
-			<ion-label floating>Password</ion-label>
-			<ion-input type="password" [(ngModel)]="passwo"></ion-input>
+			<ion-label floating [style.color]="pCol">Password</ion-label>
+			<ion-input type="password" [(ngModel)]="pass"></ion-input>
 		</ion-item>
 
-		
+
 
 		<ion-item>
-			<ion-label floating>Email</ion-label>
-			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
-		</ion-item>
-
-		<ion-item>
-			<ion-label floating>Telephone Number</ion-label>
-			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
+			<ion-label floating [style.color]="eCol">Email</ion-label>
+			<ion-input type="text" [(ngModel)]="email"></ion-input>
 		</ion-item>
 
 		<ion-item>
-			<ion-label floating>TRN/Driver's License</ion-label>
-			<ion-input type="text" [(ngModel)]="passwo"></ion-input>
+			<ion-label floating [style.color]="nCol">Telephone Number</ion-label>
+			<ion-input type="text" [(ngModel)]="number"></ion-input>
 		</ion-item>
 
-		
+		<ion-item>
+			<ion-label floating [style.color]="iCol" >TRN/Driver's License</ion-label>
+			<ion-input type="text" [(ngModel)]="govID"></ion-input>
+		</ion-item>
+
+
 
 <ion-item>
-			<button ion-button color="dark" (click)='check()'> Create Account </button>
+			<button ion-button color="dark" (click)='createUser()'> Create Account </button>
 		</ion-item>
 	</ion-list>
 </ion-content>
