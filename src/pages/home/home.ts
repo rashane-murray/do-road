@@ -4,58 +4,66 @@ import { NavController, LoadingController } from 'ionic-angular';
 import {Create} from '../create/create';
 import {SignIn} from '../signIn/signIn';
 import {GooglePlus } from '@ionic-native/google-plus';
-import { NativeStorage } from '@ionic-native/native-storage';
-import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook';
+import { RoadMap } from '../map/map';
+import { UserPage } from '../userPage/userPage';
+import { Geolocation } from '@ionic-native/geolocation'
+
+
+
 
 
 @Component({
-selector: 'page-home',
-templateUrl: 'home.html',
+  selector: 'page-home',
+  templateUrl: 'home.html',
 
 })
 
 export class HomePage {
 
-sub;
+  sub;
+ // user: User;
 
-constructor(public navCtrl: NavController, public loadingCtrl: LoadingController, public googlePlus: GooglePlus, public nativeStorage: NativeStorage, public fb: Facebook) {
-
-}
+  constructor(public navCtrl: NavController, public loadingCtrl: LoadingController, public googlePlus: GooglePlus, public geolocation: Geolocation) {
+   
+  }
 
 
 
 
   register(){
-  this.navCtrl.push(Create);
+    this.navCtrl.push(Create);
+
   }
 
   sign(){
-  this.navCtrl.push(SignIn);
+    this.navCtrl.push(SignIn);
+  }
+
+  mapped(){
+    
+    this.navCtrl.push(UserPage);
   }
 
   doGoogleLogin(){
-  
-  let loading = this.loadingCtrl.create({
-    content: 'Please wait...'
-  });
-  loading.present();
 
-  this.googlePlus.login({})
-  .then( res => {
-  loading.dismiss();
-  this.navCtrl.push(Create);
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
 
-  })
- ;
+    this.googlePlus.login({})
+    .then( res => {
+      loading.dismiss();
+      this.navCtrl.push(Create);
+
+    });
+  }
+
+
+
+
+
+
+
+
 }
-
-
-
-	
-	
-	
-
-
-}
-
-
