@@ -12,7 +12,7 @@ import { RoadMap } from '../map/map';
 
 @Component({
 selector: 'page-userpage',
-templateUrl: 'UserPage.html',
+templateUrl: 'userPage.html',
 
 })
 
