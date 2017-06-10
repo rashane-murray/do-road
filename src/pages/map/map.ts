@@ -32,6 +32,7 @@ export class RoadMap {
   ionViewDidLoad(){
     this.initMap();
   }
+  
 
   initMap(){
 
