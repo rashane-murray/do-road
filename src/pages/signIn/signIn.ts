@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, LoadingController } from 'ionic-angular';
 
+import {UserPage} from '../userPage/userPage';
 
 @Component({
   selector: 'page-signin',
@@ -8,10 +9,25 @@ import { NavController } from 'ionic-angular';
 })
 export class SignIn {
 
-  constructor(public navCtrl: NavController) {
+	name;
+	password;
+	loader;
+
+  constructor(public navCtrl: NavController, public load: LoadingController) {
 
   }
 
+check(){
+	
 
+}
+
+loading() {
+    this.loader = this.load.create({
+      content: 'Please wait...',
+      dismissOnPageChange: true
+    });
+    this.loader.present();
+  }
 
 }
