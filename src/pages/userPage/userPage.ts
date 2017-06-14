@@ -15,7 +15,7 @@ import { RoadMapPage } from '../road-map/road-map';
 
 @Component({
 selector: 'page-userpage',
-templateUrl: 'UserPage.html',
+templateUrl: 'userPage.html',
 
 })
 
