@@ -5,7 +5,10 @@ import { Platform } from 'ionic-angular';
 import { GoogleMaps, GoogleMap, GoogleMapsEvent, LatLng, CameraPosition, MarkerOptions,
   Marker
 } from '@ionic-native/google-maps';
+import { Geolocation } from '@ionic-native/geolocation';
 import { UserProvider } from '../../providers/user/user';
+
+
 
 
 declare var google;
@@ -21,9 +24,11 @@ export class RoadMap {
 
   @ViewChild('map') mapElement;
   map: any;
+  lat = 18.2;
+  lon=77.3;
   
 
-  constructor(public navCtrl: NavController, public platform: Platform, public googleMaps: GoogleMaps, public user: UserProvider) {
+  constructor(public navCtrl: NavController, public platform: Platform, public googleMaps: GoogleMaps, public user: UserProvider, public geolocation: Geolocation) {
   	this.platform = platform;
     
   }
@@ -32,12 +37,17 @@ export class RoadMap {
   ionViewDidLoad(){
     this.initMap();
   }
+  
 
   initMap(){
 
-    
+    this.geolocation.getCurrentPosition().then((resp) => {
+      this.lat = resp.coords.latitude;
+      this.lon = resp.coords.longitude;
 
-    let latLng = new google.maps.LatLng(this.user.lat, this.user.long);
+        });
+
+       let latLng = new google.maps.LatLng(this.lat, this.lon);
     let mapOptions = {
       center: latLng,
       zoom: 15,
@@ -46,6 +56,10 @@ export class RoadMap {
 
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+  
+
+   
   }
 
 }

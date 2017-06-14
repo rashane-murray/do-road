@@ -5,6 +5,9 @@ import {Create} from '../create/create';
 import {SignIn} from '../signIn/signIn';
 import {GooglePlus } from '@ionic-native/google-plus';
 import { RoadMap } from '../map/map';
+import { Options } from '../options/options';
+import { RoadMapPage } from '../road-map/road-map';
+
 
 
 
@@ -19,12 +22,15 @@ templateUrl: 'userPage.html',
 export class UserPage {
 
 sub;
+params =  {name:'hue', email:'emai'};
 tab1 = Create;
 tab2 = RoadMap;
+tab3 = (Options);
 
 constructor(public navCtrl: NavController, public navParams: NavParams, public googlePlus: GooglePlus) {
 
 }
+
 
 
 

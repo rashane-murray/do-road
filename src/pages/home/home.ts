@@ -7,6 +7,7 @@ import {GooglePlus } from '@ionic-native/google-plus';
 import { RoadMap } from '../map/map';
 import { UserPage } from '../userPage/userPage';
 import { Geolocation } from '@ionic-native/geolocation'
+import { UserProvider } from '../../providers/user/user';
 
 
 
@@ -23,7 +24,7 @@ export class HomePage {
   sub;
  // user: User;
 
-  constructor(public navCtrl: NavController, public loadingCtrl: LoadingController, public googlePlus: GooglePlus, public geolocation: Geolocation) {
+  constructor(public navCtrl: NavController, public loadingCtrl: LoadingController, public googlePlus: GooglePlus, public geolocation: Geolocation, public user: UserProvider) {
    
   }
 
