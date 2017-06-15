@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
 import { UserPage } from '../pages/userPage/userPage';
-
+import { Geolocation } from '@ionic-native/geolocation';
 import { LoadingController } from 'ionic-angular';
 @Component({
   templateUrl: 'app.html'
@@ -14,7 +14,7 @@ export class MyApp {
   rootPage:any = HomePage;
   loader;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,  public load: LoadingController) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation) {
    
     platform.ready().then(() => {
       this.loading();
@@ -22,6 +22,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+      
 
       this.loader.dismiss();
 

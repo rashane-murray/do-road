@@ -11,7 +11,7 @@ import { UserProvider } from '../../providers/user/user';
 
 
 
-declare var google;
+declare var google, navigator;
 
 
 @IonicPage()
@@ -24,38 +24,43 @@ export class RoadMap {
 
   @ViewChild('map') mapElement;
   map: any;
-  lat = 18.2;
-  lon=77.3;
-  
+ 
 
   constructor(public navCtrl: NavController, public platform: Platform, public googleMaps: GoogleMaps, public user: UserProvider, public geolocation: Geolocation) {
-  	this.platform = platform;
-    
+   this.platform.ready().then(() => this.onPlatformReady());
+  
   }
+
+
+  private onPlatformReady(): void {
+
+}
 
 
   ionViewDidLoad(){
-    this.initMap();
+    this.loadMap();
   }
   
 
-  initMap(){
+  loadMap(){
 
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.lat = resp.coords.latitude;
-      this.lon = resp.coords.longitude;
-
-        });
-
-       let latLng = new google.maps.LatLng(this.lat, this.lon);
+    navigator.geolocation.getCurrentPosition((position) => {
+  
+    let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     let mapOptions = {
       center: latLng,
       zoom: 15,
       mpTypeId: google.maps.MapTypeId.ROADMAP
-    };
+    }
 
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+        }, (err) => {
+          console.log(err);
+        });
+
+    
 
   
 
