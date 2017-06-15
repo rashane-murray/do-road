@@ -18,6 +18,8 @@ export class SignIn {
   }
 
 check(){
+
+  console.log("Checked");
 	
 
 }
