@@ -9,7 +9,7 @@ import {UserPage} from '../userPage/userPage';
 })
 export class SignIn {
 
-	name;
+	email;
 	password;
 	loader;
 
@@ -18,6 +18,8 @@ export class SignIn {
   }
 
 check(){
+
+  console.log("Checked");
 	
 
 }
