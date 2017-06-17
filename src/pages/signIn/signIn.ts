@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController, MenuController } from 'ionic-angular';
 
 import {UserPage} from '../userPage/userPage';
+import {HomePage} from '../home/home';
+import { File } from '@ionic-native/file';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-signin',
@@ -13,15 +16,20 @@ export class SignIn {
 	password;
 	loader;
 
-  constructor(public navCtrl: NavController, public load: LoadingController) {
+  constructor(public navCtrl: NavController, public load: LoadingController, public file: File, public alrt: AlertController, public storage: Storage, public menu: MenuController) {
+
+    menu.swipeEnable(false);
 
   }
 
 check(){
+  this.storage.set("logged", 'name');
+   this.navCtrl.setRoot(UserPage);
 
-  console.log("Checked");
-	
+}
 
+cancel(){
+  this.navCtrl.setRoot(HomePage);
 }
 
 loading() {
