@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController, MenuController } from 'ionic-angular';
 import {Create} from '../create/create';
 import {SignIn} from '../signIn/signIn';
 import {GooglePlus } from '@ionic-native/google-plus';
-import { RoadMap } from '../map/map';
-import { UserPage } from '../userPage/userPage';
 import { Geolocation } from '@ionic-native/geolocation'
-import { UserProvider } from '../../providers/user/user';
+
 
 
 
@@ -24,7 +22,9 @@ export class HomePage {
   sub;
  // user: User;
 
-  constructor(public navCtrl: NavController, public loadingCtrl: LoadingController, public googlePlus: GooglePlus, public geolocation: Geolocation, public user: UserProvider) {
+  constructor(public navCtrl: NavController, public loadingCtrl: LoadingController, public googlePlus: GooglePlus, public geolocation: Geolocation, public menu: MenuController) {
+
+    menu.swipeEnable(false);
    
   }
 
@@ -37,13 +37,10 @@ export class HomePage {
   }
 
   sign(){
-    this.navCtrl.push(SignIn);
+    this.navCtrl.setRoot(SignIn);
   }
 
-  mapped(){
-    
-    this.navCtrl.push(UserPage);
-  }
+ 
 
   doGoogleLogin(){
 
