@@ -3,8 +3,6 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
-
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Create } from '../pages/create/create';
@@ -18,9 +16,12 @@ import { UserProvider } from '../providers/user/user';
 import { File } from '@ionic-native/file';
 import { IonicStorageModule } from '@ionic/storage';
 import { ListPage } from '../pages/list/list';
-
-
-
+import { AbsoluteDragDirective } from '../directives/absolute-drag/absolute-drag';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
+import { NativeStorage } from '@ionic-native/native-storage';
+import { HTTP } from '@ionic-native/http';
+import {HttpModule} from '@angular/http';
 
 
 @NgModule({
@@ -31,10 +32,12 @@ import { ListPage } from '../pages/list/list';
     SignIn,
     RoadMap,
     UserPage,
-    ListPage
+    ListPage,
+    AbsoluteDragDirective
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp),
      IonicStorageModule.forRoot()
   ],
@@ -57,7 +60,11 @@ import { ListPage } from '../pages/list/list';
     Geolocation,
     RoadMap,
     UserProvider,
-    File
+    File,
+    TextToSpeech,
+    BackgroundGeolocation,
+    NativeStorage,
+    HTTP
   ]
 })
 export class AppModule {}

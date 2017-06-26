@@ -2,35 +2,30 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform, Nav } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
 import { HomePage } from '../pages/home/home';
 import { UserPage } from '../pages/userPage/userPage';
 import { Geolocation } from '@ionic-native/geolocation';
-import { LoadingController } from 'ionic-angular';
-
+import { LoadingController, ToastController } from 'ionic-angular';
+import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
 import { Storage } from '@ionic/storage';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
 
-   @ViewChild(Nav) nav: Nav;
+  @ViewChild(Nav) nav: Nav;
 
   rootPage:any = HomePage;
-   pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: any}>;
   loader;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation, public storage: Storage) {
-   this.initializeApp();
-
-    // used for an example of ngFor and navigation
-    this.pages = [
-      { title: 'Logout', component: HomePage }
-    ];
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation, public storage: Storage, public bkgrnd: BackgroundGeolocation, public tst: ToastController, public stg: NativeStorage) {
+    this.initializeApp();   
   }
 
- initializeApp() {
+  initializeApp() {
     this.platform.ready().then(() => {
       this.loading();
 
@@ -39,18 +34,64 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-     this.storage.get('logged').then((val) => {
-       console.log(val);
-       if(val == null)
-         this.rootPage=HomePage;
-       else
-         this.rootPage=UserPage;
-     }).catch((err) => {
-       console.log("Not logged in");
-     });
+      this.pages = [
+      { title: 'Logout', component: HomePage }
+      ];
+
+      this.storage.get('logged').then((val) => {
+        console.log(val);
+        if(val == null)
+          this.rootPage=HomePage;
+        else{
+          this.rootPage=UserPage;
+          this.storage.set('locate', true);
+          this.locate();
+
+        }
+      }).catch((err) => {
+        console.log("Not logged in");
+      });
 
       this.loader.dismiss();
     });
+
+    
+  }
+
+  locate (){
+
+    const config: BackgroundGeolocationConfig = {
+      desiredAccuracy: 10,
+      stationaryRadius: 20,
+      distanceFilter: 30,
+      debug: false, //  enable this hear sounds for background-geolocation life-cycle.
+      stopOnTerminate: false, // enable this to clear background location settings when the app terminates
+    };
+
+    
+    this.bkgrnd.configure(config).subscribe((location: BackgroundGeolocationResponse) => {
+
+
+      let f = "" + location.latitude;
+      let lon = "" + location.longitude;
+      this.toasting(f);
+      
+      this.stg.setItem('lat', f).then(() => this.toasting('Work')), error => this.toasting("Failed");
+      this.stg.setItem('long', lon).then(() => this.toasting('Work')), error => this.toasting("Failed");
+
+
+    });
+
+    this.bkgrnd.start();
+  }
+
+  toasting(s){
+    let toast = this.tst.create({
+      message: s,
+      duration: 3000,
+      position: 'top'
+    });
+    toast.present();
   }
 
   openPage(page) {
@@ -63,11 +104,9 @@ export class MyApp {
 
 
   loading(){
-
     this.loader = this.load.create({
       content: "Checking for signed in account"
     });
-
     this.loader.present();
   }
 }
