@@ -34,14 +34,14 @@ export class RoadMap {
   markerArray = [];
   stepDisplay;
   there = false;
-  n;
+
   myRoute;
   anonRoute;
   num;
 
 
 
-  constructor(public navCtrl: NavController, public platform: Platform, public user: UserProvider, public geolocation: Geolocation, public tts: TextToSpeech, public tst: ToastController, public storage: Storage, public bkgrnd: BackgroundGeolocation, public alt: AlertController, public stg: NativeStorage) {
+  constructor(public navCtrl: NavController, public platform: Platform, public user: UserProvider, public geolocation: Geolocation, public tts: TextToSpeech, public toastCtrl: ToastController, public storage: Storage, public bkgrnd: BackgroundGeolocation, public alt: AlertController, public stg: NativeStorage) {
     this.platform.ready().then(() => this.onPlatformReady());
   }
 
@@ -131,7 +131,7 @@ export class RoadMap {
     console.log(response.rows[0].elements[0].duration.text);
   }
 
-  
+
 
   showSteps(directionResult) {
     // For each step, place a marker, and add the text to the marker's
@@ -140,18 +140,19 @@ export class RoadMap {
     // routes.
     this.myRoute = directionResult.routes[0].legs[0];
 
-    for (let i = 0; i < this.myRoute.steps.length; i++) {
-      console.log('Welp');
+   /** for (let i = 0; i < this.myRoute.steps.length; i++) {
+    
 
-      // console.log(myRoute.steps[i].instructions)
-      // var marker = new google.maps.Marker({
-        //    position: myRoute.steps[i].start_point,
-        //    map: this.map
-        //   });
-        //   this.attachInstructionText(marker, myRoute.steps[i].instructions);
-        //    this.markerArray[i] = marker;
-        //}
+       console.log(myRoute.steps[i].instructions)
+       var marker = new google.maps.Marker({
+          position: myRoute.steps[i].start_point,
+          map: this.map
+         });
+         this.attachInstructionText(marker, myRoute.steps[i].instructions);
+          this.markerArray[i] = marker;
       }
+     }*/
+
       this.distTime();
       console.log("1st" + this.myRoute.steps[0].instructions.replace(/<(?:.|\n)*?>/gm, ''));
 
@@ -167,9 +168,9 @@ export class RoadMap {
   });*/
 }
 
-toasting(s){
-  let toast = this.tst.create({
-    message: s,
+toasting(content){
+  let toast = this.toastCtrl.create({
+    message: content,
     duration: 3000,
     position: 'top'
   });
@@ -179,25 +180,25 @@ toasting(s){
 //Code below to track driver during pickup
 
 track(){
-  let c = this.myRoute.steps.length;
-  let p = c;
+  let numberOfSteps = this.myRoute.steps.length;
+  let stepsLeft = numberOfSteps;
   while(!this.there){
     this.pos();
-    let r = this.dir(c);
-    let s = this.steps(r);
-    if (s == 1){
-      let l = c-1;
+    let result = this.dir(numberOfSteps);
+    let steps = this.steps(result);
+    if (steps == 1){
+      let l = numberOfSteps-1;
       console.log("2nd" + this.myRoute.steps[l].instructons)
       this.tts.speak(this.myRoute.steps[l].instructons);
       this.there = true;
-
     }
-    else if (s < p)
+
+    else if (steps < stepsLeft)
     {
-      let diff = c - s;
+      let diff = numberOfSteps - steps;
       console.log("3rd" + this.myRoute.steps[diff].instructons)
       this.tts.speak(this.myRoute.steps[diff].instructons);
-      p = s
+      stepsLeft = steps;
     }
     this.createTimeout(30000)
     .then(() => {
@@ -243,9 +244,9 @@ steps(results){
   if (!results)
     console.log("No results");
   else{
-    let m = results.routes[0].legs[0];
-    let f = m.steps.length
-    return f;
+    let routeSteps = results.routes[0].legs[0];
+    let numberOfSteps = routeSteps.steps.length
+    return numberOfSteps;
   }
 }
 
