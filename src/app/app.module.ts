@@ -3,23 +3,25 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
-
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Create } from '../pages/create/create';
 import { SignIn } from '../pages/signIn/signIn';
 import { RoadMap } from '../pages/map/map';
 import { UserPage } from '../pages/userPage/userPage';
-import { Options } from '../pages/options/options';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
 import { UserProvider } from '../providers/user/user';
-import { RoadMapPage } from '../pages/road-map/road-map';
-
-
-
+import { File } from '@ionic-native/file';
+import { IonicStorageModule } from '@ionic/storage';
+import { ListPage } from '../pages/list/list';
+import { AbsoluteDragDirective } from '../directives/absolute-drag/absolute-drag';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
+import { NativeStorage } from '@ionic-native/native-storage';
+import { HTTP } from '@ionic-native/http';
+import {HttpModule} from '@angular/http';
 
 
 @NgModule({
@@ -30,12 +32,14 @@ import { RoadMapPage } from '../pages/road-map/road-map';
     SignIn,
     RoadMap,
     UserPage,
-    Options,
-    RoadMapPage
+    ListPage,
+    AbsoluteDragDirective
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    HttpModule,
+    IonicModule.forRoot(MyApp),
+     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -45,8 +49,7 @@ import { RoadMapPage } from '../pages/road-map/road-map';
     SignIn,
     RoadMap,
     UserPage,
-    Options,
-    RoadMapPage
+    ListPage
   ],
   providers: [
     StatusBar,
@@ -56,8 +59,12 @@ import { RoadMapPage } from '../pages/road-map/road-map';
     GoogleMaps,
     Geolocation,
     RoadMap,
-    UserProvider
-
+    UserProvider,
+    File,
+    TextToSpeech,
+    BackgroundGeolocation,
+    NativeStorage,
+    HTTP
   ]
 })
 export class AppModule {}
