@@ -21,7 +21,7 @@ export class SignIn {
 	loader;
   posts: any;
 
-  constructor(public navCtrl: NavController, public load: LoadingController, public file: File, public alrt: AlertController, public storage: Storage, public menu: MenuController, public http: Http) {
+  constructor(public navCtrl: NavController, public load: LoadingController, public file: File, public alertCtrl: AlertController, public storage: Storage, public menu: MenuController, public http: Http) {
 
     menu.swipeEnable(false);
 
@@ -65,16 +65,16 @@ export class SignIn {
     this.http.post('http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/drivercoordinates',JSON.stringify(coord), {headers:headers}).subscribe(data => {
       this.posts = data;
       
-      let a = this.alrt.create({
+      let alert = this.alertCtrl.create({
         title: "JSON",
         subTitle: this.posts
       });
-      a.present();
-    }, (err) => {  let a = this.alrt.create({
+      alert.present();
+    }, (err) => {  let alert = this.alertCtrl.create({
       title: "JSON",
       subTitle: err
     });
-    a.present();});*/
+    alert.present();});*/
   }
 
 

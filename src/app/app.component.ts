@@ -21,7 +21,7 @@ export class MyApp {
   pages: Array<{title: string, component: any}>;
   loader;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation, public storage: Storage, public bkgrnd: BackgroundGeolocation, public tst: ToastController, public stg: NativeStorage) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation, public storage: Storage, public bkgrnd: BackgroundGeolocation, public toastCtrl: ToastController, public stg: NativeStorage) {
     this.initializeApp();   
   }
 
@@ -58,7 +58,7 @@ export class MyApp {
     
   }
 
-  locate (){
+  locate(){
 
     const config: BackgroundGeolocationConfig = {
       desiredAccuracy: 10,
@@ -86,7 +86,7 @@ export class MyApp {
   }
 
   toasting(s){
-    let toast = this.tst.create({
+    let toast = this.toastCtrl.create({
       message: s,
       duration: 3000,
       position: 'top'
