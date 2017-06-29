@@ -16,7 +16,7 @@ import { ListPage } from '../list/list';
 
 @Component({
 selector: 'page-userpage',
-templateUrl: 'UserPage.html',
+templateUrl: 'userPage.html',
 
 })
 
