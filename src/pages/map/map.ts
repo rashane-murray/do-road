@@ -27,14 +27,16 @@ export class RoadMap {
   directionsService = new google.maps.DirectionsService();
   dServe = new google.maps.DirectionsService();
   latLng;
-  CurrentLatLng;
+  currentLatLng;
   direct;
   lat = "Place";
   lon;
   markerArray = [];
   stepDisplay;
   there = false;
-
+  numberOfSteps;
+  next;
+  marker;
   myRoute;
   anonRoute;
   num;
@@ -69,7 +71,7 @@ export class RoadMap {
     navigator.geolocation.getCurrentPosition((position) => {
 
       this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      this.CurrentLatLng = this.latLng;
+      this.currentLatLng = this.latLng;
       console.log(""+ position.coords.longitude+":..." + position.coords.latitude);
       let mapOptions = {
         center: this.latLng,
@@ -97,7 +99,9 @@ export class RoadMap {
     let end = document.getElementById('end');
     let request = {
       origin: this.latLng,
-      destination: new google.maps.LatLng(18, -76.78),
+      destination: new google.maps.LatLng(18.0159, -76.7424),
+      waypoints: [{location:new google.maps.LatLng(18.0032, -76.7452), stopover:true}],
+      provideRouteAlternatives: true,
       travelMode: 'DRIVING',
       drivingOptions: {
         departureTime: new Date(),
@@ -120,7 +124,7 @@ export class RoadMap {
     service.getDistanceMatrix(
     {
       origins: [this.latLng],
-      destinations: [new google.maps.LatLng(18, -76.78)],
+      destinations: [new google.maps.LatLng(18.0159, -76.7424)],
       travelMode: 'DRIVING'
     }, this.callback);
   }
@@ -139,7 +143,9 @@ export class RoadMap {
     // can keep track of it and remove it when calculating new
     // routes.
     this.myRoute = directionResult.routes[0].legs[0];
-
+    this.numberOfSteps= this.myRoute.steps.length;
+     
+    this.next = this.numberOfSteps -1;
    /** for (let i = 0; i < this.myRoute.steps.length; i++) {
     
 
@@ -154,18 +160,35 @@ export class RoadMap {
      }*/
 
       this.distTime();
-      console.log("1st" + this.myRoute.steps[0].instructions.replace(/<(?:.|\n)*?>/gm, ''));
-
+      console.log("1st" + this.removeHTML(this.myRoute.steps[0].instructions));
+      let sentence = this.removeHTML(this.myRoute.steps[0].instructions);
+      this.tts.speak(sentence);
       //this.tts.speak(this.myRoute.steps[0].instructions)
       //.then(() => console.log('Success'))
       //.catch((reason: any) => console.log(reason));
-      //this.track();
+      this.track();
 
 /**attachInstructionText(marker, text) {
   google.maps.event.addListener((marker) => {
     this.stepDisplay.setContent(text);
     this.stepDisplay.open(this.map, marker);
   });*/
+
+}
+
+addMarker(){
+
+  this.marker = new google.maps.Marker({
+          position: this.currentLatLng,
+          map: this.map
+         });
+
+
+}
+
+removeHTML(sentence){
+  return sentence.replace(/<(?:.|\n)*?>/gm, '');
+
 }
 
 toasting(content){
@@ -180,40 +203,17 @@ toasting(content){
 //Code below to track driver during pickup
 
 track(){
-  let numberOfSteps = this.myRoute.steps.length;
-  let stepsLeft = numberOfSteps;
-  while(!this.there){
+    this.addMarker();
     this.pos();
-    let result = this.dir(numberOfSteps);
-    let steps = this.steps(result);
-    if (steps == 1){
-      let l = numberOfSteps-1;
-      console.log("2nd" + this.myRoute.steps[l].instructons)
-      this.tts.speak(this.myRoute.steps[l].instructons);
-      this.there = true;
-    }
-
-    else if (steps < stepsLeft)
-    {
-      let diff = numberOfSteps - steps;
-      console.log("3rd" + this.myRoute.steps[diff].instructons)
-      this.tts.speak(this.myRoute.steps[diff].instructons);
-      stepsLeft = steps;
-    }
-    this.createTimeout(30000)
-    .then(() => {
-      console.log(`done after 300ms delay`);
-    });
-
-
-  }
+    this.directions();
+    
 }
 
-dir(c){
+directions(){
 
   let request = {
-    origin: this.CurrentLatLng,
-    destination: new google.maps.LatLng(18, -76.78),
+    origin: this.currentLatLng,
+    destination: new google.maps.LatLng(18.0159, -76.7424),
     travelMode: 'DRIVING',
     drivingOptions: {
       departureTime: new Date(),
@@ -223,7 +223,7 @@ dir(c){
   };
   this.dServe.route(request, (result, status) => {
     if (status == 'OK') {
-      return this.steps(result);
+      this.steps(result);
     }
     else console.log(status);
     //else return c;
@@ -234,7 +234,7 @@ dir(c){
 pos(){
   navigator.geolocation.getCurrentPosition((position) => {
 
-    this.CurrentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    this.currentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   }, (err) => {
     console.log(err);
   });
@@ -245,8 +245,34 @@ steps(results){
     console.log("No results");
   else{
     let routeSteps = results.routes[0].legs[0];
-    let numberOfSteps = routeSteps.steps.length
-    return numberOfSteps;
+    let length = routeSteps.steps.length;
+    if (length <= 1){
+      this.there = true;
+      let stepInfo = routeSteps.steps[0].instructions;
+      console.log(stepInfo);
+      this.tts.speak(stepInfo);
+    }
+    else if (length<=this.next){
+      this.next = length-1;
+      let stepInfo = routeSteps.steps[0].instructions;
+      console.log(stepInfo);
+      this.tts.speak(stepInfo);
+        setTimeout(() => {
+      if(!this.there)
+        this.track();      
+    },5000);
+
+    }
+
+    else{
+      setTimeout(() => {
+      if(!this.there){
+        //this.track(); 
+        console.log("Checked");     
+      }
+    },5000);
+    }
+    
   }
 }
 
@@ -256,5 +282,6 @@ createTimeout(timeout) {
   })
 
 }
+
 }
 

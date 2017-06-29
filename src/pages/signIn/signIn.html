@@ -19,17 +19,14 @@
 			<ion-label floating>Password</ion-label>
 			<ion-input type="password" [(ngModel)]="password"></ion-input>
 		</ion-item>
-		
+		</ion-list>
 
 		
 
-		<ion-item no-lines>
-			<button ion-button color="dark" (click)='check()'> Sign In </button>
-
-		</ion-item>
 		
-		<ion-item no-lines>
-			<button ion-button color="dark" (click)='cancel()'> Back </button>
-		</ion-item>
-	</ion-list>
+			<button ion-button  (click)='check()' clear icon-left> Sign In </button>
+
+			<button ion-button (click)='cancel()' clear icon-rigth> Back </button>
+	
+	
 </ion-content>

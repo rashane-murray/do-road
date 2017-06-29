@@ -5,6 +5,7 @@ import {Create} from '../create/create';
 
 
 import { RoadMap } from '../map/map';
+import { ListPage } from '../list/list';
 
 
 
@@ -23,7 +24,7 @@ export class UserPage {
 
 sub;
 params =  {name:'hue', email:'emai'};
-tab1 = Create;
+tab1 = ListPage;
 tab2 = RoadMap;
 
 

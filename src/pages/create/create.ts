@@ -46,7 +46,7 @@ export class Create {
       let a = this.alertCtrl.create({
         title: this.errorTitle,
         subTitle: "Please fill in highlighted fields",
-        cssClass: 'alertStyle'
+        //cssClass: 'alertStyle'
       });
       a.present();    }
 

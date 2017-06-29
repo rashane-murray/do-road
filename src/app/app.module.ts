@@ -20,9 +20,9 @@ import { AbsoluteDragDirective } from '../directives/absolute-drag/absolute-drag
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { NativeStorage } from '@ionic-native/native-storage';
-import { HTTP } from '@ionic-native/http';
-import {HttpModule} from '@angular/http';
 
+import {HttpModule} from '@angular/http';
+import { Network } from '@ionic-native/network';
 
 @NgModule({
   declarations: [
@@ -64,7 +64,7 @@ import {HttpModule} from '@angular/http';
     TextToSpeech,
     BackgroundGeolocation,
     NativeStorage,
-    HTTP
+    Network
   ]
 })
 export class AppModule {}

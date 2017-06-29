@@ -9,6 +9,7 @@ import { LoadingController, ToastController } from 'ionic-angular';
 import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
 import { Storage } from '@ionic/storage';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { Network } from '@ionic-native/network';
 
 @Component({
   templateUrl: 'app.html'
@@ -21,7 +22,7 @@ export class MyApp {
   pages: Array<{title: string, component: any}>;
   loader;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation, public storage: Storage, public bkgrnd: BackgroundGeolocation, public toastCtrl: ToastController, public stg: NativeStorage) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation, public storage: Storage, public bkgrnd: BackgroundGeolocation, public toastCtrl: ToastController, public stg: NativeStorage, public network: Network) {
     this.initializeApp();   
   }
 
@@ -33,7 +34,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-
+      this.internetCheck();
       this.pages = [
       { title: 'Logout', component: HomePage }
       ];
@@ -100,6 +101,24 @@ export class MyApp {
     this.nav.setRoot(page.component);
     this.storage.remove('logged');
   }
+
+  internetCheck(){
+
+let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+  this.toasting('network was disconnected :-(');
+});
+
+
+let connectSubscription = this.network.onConnect().subscribe(() => {
+  console.log('network connected!');
+  setTimeout(() => {
+    if (this.network.type === 'wifi') {
+      this.toasting('we got a wifi connection, woohoo!');
+    }
+  }, 3000);
+});
+
+ }
 
 
 
