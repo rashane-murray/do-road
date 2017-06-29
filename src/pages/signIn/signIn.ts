@@ -28,6 +28,7 @@ export class SignIn {
   }
 
   check(){
+ this.loopFunction(0);
     
     /**let timed = 0
     while(timed < 5){
@@ -77,7 +78,19 @@ export class SignIn {
     alert.present();});*/
   }
 
+loopFunction(number){
+      console.log(number);
+      if (number<5) {
+    setTimeout(() => {
+      console.log("Worked") 
+      this.loopFunction(number+1);      
+    },3000);
+    
+  }
+   console.log("Time");
+   console.log("Another one");
 
+}
 
 
 
