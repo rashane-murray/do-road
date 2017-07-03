@@ -36,3 +36,4 @@ constructor(public navCtrl: NavController, public navParams: NavParams) {
 //<ion-tab tabIcon="settings" [root]="tab3" tabTitle="Options" [rootParams]="params"></ion-tab>
 
 }
+

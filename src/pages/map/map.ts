@@ -40,6 +40,7 @@ export class RoadMap {
   myRoute;
   anonRoute;
   num;
+  passengers = [];
 
 
 
@@ -91,7 +92,29 @@ export class RoadMap {
     });
   }
 
+  passenger(){
+    this.storage.get('Travelling').then(data => this.passengers = data).catch( err => this.toasting(err));
+
+    if(this.passengers == null)
+      this.toasting('No passengers selected');
+    else{
+      console.log(this.passengers[0]);
+      if (this.passengers[0] == null)
+         this.toasting("No passengers selected");
+      else{
+      setTimeout(() => {
+      this.storage.remove('Travelling');
+      this.toasting('Rooad!');
+    },2000);
+      console.log(this.passengers)
+      this.calcRoute();
+    }
+  }
+  }
+
   calcRoute() {
+     
+    
 
     this.stg.getItem('lat').then(data => this.toasting(data), error => this.toasting("Fail"));
     this.storage.get('logged').then((val) => this.toasting(val));
