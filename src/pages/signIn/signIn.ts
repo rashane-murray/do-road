@@ -21,13 +21,14 @@ export class SignIn {
 	loader;
   posts: any;
 
-  constructor(public navCtrl: NavController, public load: LoadingController, public file: File, public alrt: AlertController, public storage: Storage, public menu: MenuController, public http: Http) {
+  constructor(public navCtrl: NavController, public load: LoadingController, public file: File, public alertCtrl: AlertController, public storage: Storage, public menu: MenuController, public http: Http) {
 
     menu.swipeEnable(false);
 
   }
 
   check(){
+ this.loopFunction(0);
     
     /**let timed = 0
     while(timed < 5){
@@ -65,19 +66,31 @@ export class SignIn {
     this.http.post('http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/drivercoordinates',JSON.stringify(coord), {headers:headers}).subscribe(data => {
       this.posts = data;
       
-      let a = this.alrt.create({
+      let alert = this.alertCtrl.create({
         title: "JSON",
         subTitle: this.posts
       });
-      a.present();
-    }, (err) => {  let a = this.alrt.create({
+      alert.present();
+    }, (err) => {  let alert = this.alertCtrl.create({
       title: "JSON",
       subTitle: err
     });
-    a.present();});*/
+    alert.present();});*/
   }
 
+loopFunction(number){
+      console.log(number);
+      if (number<5) {
+    setTimeout(() => {
+      console.log("Worked") 
+      this.loopFunction(number+1);      
+    },3000);
+    
+  }
+   console.log("Time");
+   console.log("Another one");
 
+}
 
 
 
