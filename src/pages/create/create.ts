@@ -43,12 +43,12 @@ export class Create {
     }
     else{
       this.mark();
-      let a = this.alertCtrl.create({
+      let alert = this.alertCtrl.create({
         title: this.errorTitle,
         subTitle: "Please fill in highlighted fields",
         //cssClass: 'alertStyle'
       });
-      a.present();    }
+      alert.present();    }
 
 
   }

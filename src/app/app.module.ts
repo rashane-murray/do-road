@@ -9,6 +9,9 @@ import { Create } from '../pages/create/create';
 import { SignIn } from '../pages/signIn/signIn';
 import { RoadMap } from '../pages/map/map';
 import { UserPage } from '../pages/userPage/userPage';
+import { VehiclesPage } from '../pages/vehicles/vehicles';
+import { VehicleViewPage } from '../pages/vehicle-view/vehicle-view';
+import { AddVehiclePage } from '../pages/add-vehicle/add-vehicle';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -24,6 +27,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import {HttpModule} from '@angular/http';
 import { Network } from '@ionic-native/network';
 
+
 @NgModule({
   declarations: [
     MyApp,
@@ -33,7 +37,10 @@ import { Network } from '@ionic-native/network';
     RoadMap,
     UserPage,
     ListPage,
-    AbsoluteDragDirective
+    VehiclesPage,
+    AddVehiclePage,
+    AbsoluteDragDirective,
+    VehicleViewPage
   ],
   imports: [
     BrowserModule,
@@ -49,7 +56,10 @@ import { Network } from '@ionic-native/network';
     SignIn,
     RoadMap,
     UserPage,
-    ListPage
+    ListPage,
+    VehiclesPage,
+    AddVehiclePage,
+    VehicleViewPage
   ],
   providers: [
     StatusBar,

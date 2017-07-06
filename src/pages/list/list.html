@@ -1,13 +1,14 @@
 <ion-content>
   <ion-list>
-    <button ion-item *ngFor="let person of people" (click)="itemTapped($event, person)">
+    <button ion-item *ngFor="let person of passengers" (click)="personTapped($event, person)">
       <ion-icon [name]="person.status" item-left></ion-icon>
       {{person.name}}
       <div class="item-note" item-right>
-        {{person.distance}}
+        {{person.distance}}km
       </div>
     </button>
   </ion-list>
+  <button ion-button clear (click)='confirm()'>Confirm</button>
  <!-- <div *ngIf="selectedItem" padding>
     You navigated here from <b>{{selectedItem.title}}</b>
   </div> -->

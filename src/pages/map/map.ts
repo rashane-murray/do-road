@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef} from '@angular/core';
 import { IonicPage } from 'ionic-angular';
-import { NavController, ToastController, AlertController } from 'ionic-angular';
+import { NavController, ToastController, AlertController, NavParams } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { UserProvider } from '../../providers/user/user';
@@ -31,6 +31,8 @@ export class RoadMap {
   direct;
   lat = "Place";
   lon;
+  destination;
+  waypoints = [];
   markerArray = [];
   stepDisplay;
   there = false;
@@ -40,10 +42,12 @@ export class RoadMap {
   myRoute;
   anonRoute;
   num;
+  passengers = [];
 
 
 
-  constructor(public navCtrl: NavController, public platform: Platform, public user: UserProvider, public geolocation: Geolocation, public tts: TextToSpeech, public toastCtrl: ToastController, public storage: Storage, public bkgrnd: BackgroundGeolocation, public alt: AlertController, public stg: NativeStorage) {
+  constructor(public navCtrl: NavController, public platform: Platform, public user: UserProvider, public geolocation: Geolocation, public tts: TextToSpeech, public toastCtrl: ToastController, public storage: Storage, public bkgrnd: BackgroundGeolocation, public alt: AlertController, public stg: NativeStorage, public params: NavParams) {
+  
     this.platform.ready().then(() => this.onPlatformReady());
   }
 
@@ -55,16 +59,7 @@ export class RoadMap {
     this.loadMap();
   }
 
-  testThread(){
-    while(true){
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.lat = position.coords.latitude;
-        console.log(this.lat);
 
-      });
-    }
-
-  }
 
   loadMap(){
     //setTimeout(this.testThread(),3000);
@@ -85,22 +80,37 @@ export class RoadMap {
       this.directionsDisplay.setMap(this.map);
       this.directionsDisplay.setPanel(document.getElementById('directionsPanel'));
       this.stepDisplay = new google.maps.InfoWindow();
+        let p = this.params.get('passengers');
+    console.log(JSON.stringify(p[0]));
+    console.log(JSON.stringify(p[0]));
+    console.log(JSON.stringify(p[2]));
 
     }, (err) => {
       console.log(err);
     });
   }
 
-  calcRoute() {
+  passenger(){
+    let group = this.params.get('passengers');
+    let last = group.length-1;
+    this.destination = new google.maps.LatLng(group[last].lat, group[last].long);
 
-    this.stg.getItem('lat').then(data => this.toasting(data), error => this.toasting("Fail"));
-    this.storage.get('logged').then((val) => this.toasting(val));
-    let start = document.getElementById('start');
-    let end = document.getElementById('end');
+    for (let x = 0; x < last; x++){
+      this.waypoints.push({location: new google.maps.LatLng(group[x].lat, group[x].long), stopover:true})
+    }
+
+    this.calcRoute();
+   
+  }
+
+
+  calcRoute() { 
+   // let start = document.getElementById('start');
+   // let end = document.getElementById('end');
     let request = {
       origin: this.latLng,
-      destination: new google.maps.LatLng(18.0159, -76.7424),
-      waypoints: [{location:new google.maps.LatLng(18.0032, -76.7452), stopover:true}],
+      destination: this.destination,
+      waypoints: this.waypoints,
       provideRouteAlternatives: true,
       travelMode: 'DRIVING',
       drivingOptions: {

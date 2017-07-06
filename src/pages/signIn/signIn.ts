@@ -27,8 +27,13 @@ export class SignIn {
 
   }
 
+  signed(){
+    this.storage.set("logged", "name");
+    this.navCtrl.setRoot(UserPage);
+  }
+
   check(){
- this.loopFunction(0);
+// this.loopFunction(0);
     
     /**let timed = 0
     while(timed < 5){
@@ -38,8 +43,8 @@ export class SignIn {
     console.log('End')
     timed++;
   }*/
-    this.storage.set("logged", "name");
-    this.navCtrl.setRoot(UserPage);
+   // this.storage.set("logged", "name");
+    //this.navCtrl.setRoot(UserPage);
   /**  let timed = 0;
     while (true){
       console.log(timed)
@@ -48,7 +53,7 @@ export class SignIn {
 
   }*/
 
-/**   let headers = new Headers();
+   let headers = new Headers();
     headers.append('content-type', 'application/json');
     let dat = {email:"@had", password: "pass"};
     let coord = {
@@ -75,7 +80,7 @@ export class SignIn {
       title: "JSON",
       subTitle: err
     });
-    alert.present();});*/
+    alert.present();});
   }
 
 loopFunction(number){
