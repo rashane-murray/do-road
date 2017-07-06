@@ -6,7 +6,7 @@ import {Create} from '../create/create';
 
 import { RoadMap } from '../map/map';
 import { ListPage } from '../list/list';
-
+import { VehiclesPage } from '../vehicles/vehicles';
 
 
 
@@ -25,7 +25,8 @@ export class UserPage {
 sub;
 params =  {name:'hue', email:'emai'};
 tab1 = ListPage;
-tab2 = RoadMap;
+//tab2 = RoadMap;
+tab3 = VehiclesPage;
 
 
 constructor(public navCtrl: NavController, public navParams: NavParams) {

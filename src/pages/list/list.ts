@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, MenuController, ToastController, LoadingController} from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Storage } from '@ionic/storage';
+import { RoadMap } from '../map/map';
 
 @Component({
   selector: 'page-list',
@@ -13,7 +14,7 @@ export class ListPage {
   icons: string[];
   items: Array<{title: string, note: string, icon: string}>;
   people: Array<{name:string, distance: string, time: string, id: string, status:string}>;
-  passengers = [{name:'Yuki', distance: 5, time: '15 mins', id: '43455654', status:'body', lat: 18.004, long: 76.856},{name:'Mira', distance: 2, time: '5 mins', id: '4929433', status:'body', lat: 18.0032, long: 76.7452},{name:'Jace', distance: 13, time: '53 min', id: '3433434', status:'body', lat:18.0187, long: 76.7445},{name:'Suna', distance: '74', time: '1 hr 13 mins', id: '5342545', status:'body', lat: 17.9422, long: 77.2333},{name:'Hugh', distance: 0.7, time: '2 mins', id: '43434641', status:'body', lat: 18.0213, long: 76.7692}];
+  passengers = [{name:'Yuki', distance: 5, time: '15 mins', id: '43455654', status:'body', lat: 18.004, long: -76.856},{name:'Mira', distance: 2, time: '5 mins', id: '4929433', status:'body', lat: 18.0032, long: -76.7452},{name:'Jace', distance: 13, time: '53 min', id: '3433434', status:'body', lat:18.0187, long: -76.7445},{name:'Suna', distance: '74', time: '1 hr 13 mins', id: '5342545', status:'body', lat: 17.9422, long: -77.2333},{name:'Hugh', distance: 0.7, time: '2 mins', id: '43434641', status:'body', lat: 18.0213, long: -76.7692}];
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public storage: Storage, public toastCtrl: ToastController, public load: LoadingController) {
     // If we navigated to this page, we will have an item available as a nav param
     this.selectedItem = navParams.get('person');
@@ -66,6 +67,13 @@ export class ListPage {
       }
     }
 
+    removePerson(person){
+      var index = this.passengers.indexOf(person,0);
+      if (index > -1){
+        this.passengers.splice(index,1);
+      }
+    }
+
 
     sortPassengers(pass1, pass2){
       if (pass1.distance<pass2.distance)
@@ -77,10 +85,17 @@ export class ListPage {
     }
 
     confirm(){
-      this.storage.set('Travelling', this.people);
-       setTimeout(() => {
+      setTimeout(() => {
       this.toasting('Ready to go!');
-    },10000);
+      let decision = this.people;
+      this.people.forEach((person) => {
+        this.removePerson(person);
+      })
+      this.people = [];
+
+      this.navCtrl.push(RoadMap, {passengers:decision});
+
+    },500);
 
     }
 

@@ -1,0 +1,48 @@
+<!--
+  Generated template for the VehiclesPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+
+<ion-content padding>
+	<ion-fab right edge>
+		<button ion-fab color="tax" (click)='add()'>
+			<ion-icon name="add-circle"></ion-icon>
+		</button>
+	</ion-fab>
+
+  <ion-fab left edge *ngIf="show">
+    <button ion-fab mini color="light" (click)='invisible()'>
+      <ion-icon name="close-circle"></ion-icon>
+    </button>
+  </ion-fab>
+
+
+  <ion-card *ngIf="show">
+
+    <ion-card-header>
+      Details
+    </ion-card-header>
+
+    <ion-card-content>
+      <div>Brand: {{car.brand}}</div>
+      <div>Model: {{car.model}}</div>
+      <div>Capacity: {{car.capacity}}</div>
+      <div>Colour: {{car.colour}}</div>
+      <div>License: {{car.license}}</div>
+    </ion-card-content>
+
+  </ion-card>
+
+
+  <ion-list>
+    <button ion-item *ngFor="let car of cars" (click)="options($event, car)">      
+      {{car.brand}}
+    </button>
+  </ion-list>
+
+
+</ion-content>
