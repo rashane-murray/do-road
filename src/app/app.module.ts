@@ -11,6 +11,8 @@ import { RoadMap } from '../pages/map/map';
 import { UserPage } from '../pages/userPage/userPage';
 import { VehiclesPage } from '../pages/vehicles/vehicles';
 import { VehicleViewPage } from '../pages/vehicle-view/vehicle-view';
+import { PassengerMapPage } from "../pages/passenger-map/passenger-map";
+import { WaitingPage } from "../pages/waiting/waiting";
 import { AddVehiclePage } from '../pages/add-vehicle/add-vehicle';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GoogleMaps } from '@ionic-native/google-maps';
@@ -40,7 +42,9 @@ import { Network } from '@ionic-native/network';
     VehiclesPage,
     AddVehiclePage,
     AbsoluteDragDirective,
-    VehicleViewPage
+    VehicleViewPage,
+    PassengerMapPage,
+    WaitingPage
   ],
   imports: [
     BrowserModule,
@@ -59,7 +63,9 @@ import { Network } from '@ionic-native/network';
     ListPage,
     VehiclesPage,
     AddVehiclePage,
-    VehicleViewPage
+    VehicleViewPage,
+    PassengerMapPage,
+    WaitingPage
   ],
   providers: [
     StatusBar,

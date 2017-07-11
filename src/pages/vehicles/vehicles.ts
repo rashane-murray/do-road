@@ -45,7 +45,7 @@ import { VehicleViewPage } from '../vehicle-view/vehicle-view';
    }
 
    add(){
-     this.navCtrl.setRoot(AddVehiclePage);
+     this.navCtrl.push(AddVehiclePage);
    }
 
    toasting(s){

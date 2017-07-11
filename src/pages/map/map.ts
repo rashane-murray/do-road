@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef} from '@angular/core';
 import { IonicPage } from 'ionic-angular';
-import { NavController, ToastController, AlertController, NavParams } from 'ionic-angular';
+import { Navbar, NavController, ToastController, AlertController, NavParams } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { UserProvider } from '../../providers/user/user';
@@ -8,6 +8,7 @@ import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { Storage } from '@ionic/storage';
 import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { ListPage } from '../list/list';
 
 
 declare var google, navigator;
@@ -22,6 +23,7 @@ export class RoadMap {
 
 
   @ViewChild('map') mapElement;
+  @ViewChild('navbar') navBar: Navbar;
   map: any;
   directionsDisplay;
   directionsService = new google.maps.DirectionsService();
@@ -46,8 +48,8 @@ export class RoadMap {
 
 
 
-  constructor(public navCtrl: NavController, public platform: Platform, public user: UserProvider, public geolocation: Geolocation, public tts: TextToSpeech, public toastCtrl: ToastController, public storage: Storage, public bkgrnd: BackgroundGeolocation, public alt: AlertController, public stg: NativeStorage, public params: NavParams) {
-  
+  constructor(public navCtrl: NavController, public platform: Platform, public user: UserProvider, public geolocation: Geolocation, public tts: TextToSpeech, public toastCtrl: ToastController, public storage: Storage, public bkgrnd: BackgroundGeolocation, public alertCtrl: AlertController, public stg: NativeStorage, public params: NavParams) {
+
     this.platform.ready().then(() => this.onPlatformReady());
   }
 
@@ -55,7 +57,11 @@ export class RoadMap {
   private onPlatformReady(): void {}
 
 
+
   ionViewDidLoad(){
+    this.navBar.backButtonClick = () => {
+      this.back();
+    };
     this.loadMap();
   }
 
@@ -80,10 +86,9 @@ export class RoadMap {
       this.directionsDisplay.setMap(this.map);
       this.directionsDisplay.setPanel(document.getElementById('directionsPanel'));
       this.stepDisplay = new google.maps.InfoWindow();
-        let p = this.params.get('passengers');
-    console.log(JSON.stringify(p[0]));
-    console.log(JSON.stringify(p[0]));
-    console.log(JSON.stringify(p[2]));
+      let p = this.params.get('passengers');
+      console.log(JSON.stringify(p[0]));
+      
 
     }, (err) => {
       console.log(err);
@@ -100,13 +105,13 @@ export class RoadMap {
     }
 
     this.calcRoute();
-   
+    
   }
 
 
   calcRoute() { 
-   // let start = document.getElementById('start');
-   // let end = document.getElementById('end');
+    // let start = document.getElementById('start');
+    // let end = document.getElementById('end');
     let request = {
       origin: this.latLng,
       destination: this.destination,
@@ -154,7 +159,7 @@ export class RoadMap {
     // routes.
     this.myRoute = directionResult.routes[0].legs[0];
     this.numberOfSteps= this.myRoute.steps.length;
-     
+    
     this.next = this.numberOfSteps -1;
    /** for (let i = 0; i < this.myRoute.steps.length; i++) {
     
@@ -167,16 +172,16 @@ export class RoadMap {
          this.attachInstructionText(marker, myRoute.steps[i].instructions);
           this.markerArray[i] = marker;
       }
-     }*/
+    }*/
 
-      this.distTime();
-      console.log("1st" + this.removeHTML(this.myRoute.steps[0].instructions));
-      let sentence = this.removeHTML(this.myRoute.steps[0].instructions);
-      this.tts.speak(sentence);
-      //this.tts.speak(this.myRoute.steps[0].instructions)
-      //.then(() => console.log('Success'))
-      //.catch((reason: any) => console.log(reason));
-      this.track();
+    this.distTime();
+    console.log("1st" + this.removeHTML(this.myRoute.steps[0].instructions));
+    let sentence = this.removeHTML(this.myRoute.steps[0].instructions);
+    this.tts.speak(sentence);
+    //this.tts.speak(this.myRoute.steps[0].instructions)
+    //.then(() => console.log('Success'))
+    //.catch((reason: any) => console.log(reason));
+    this.track();
 
 /**attachInstructionText(marker, text) {
   google.maps.event.addListener((marker) => {
@@ -189,9 +194,9 @@ export class RoadMap {
 addMarker(){
 
   this.marker = new google.maps.Marker({
-          position: this.currentLatLng,
-          map: this.map
-         });
+    position: this.currentLatLng,
+    map: this.map
+  });
 
 
 }
@@ -213,10 +218,10 @@ toasting(content){
 //Code below to track driver during pickup
 
 track(){
-    this.addMarker();
-    this.pos();
-    this.directions();
-    
+  this.addMarker();
+  this.pos();
+  this.directions();
+  
 }
 
 directions(){
@@ -267,20 +272,20 @@ steps(results){
       let stepInfo = routeSteps.steps[0].instructions;
       console.log(stepInfo);
       this.tts.speak(stepInfo);
-        setTimeout(() => {
-      if(!this.there)
-        this.track();      
-    },5000);
+      setTimeout(() => {
+        if(!this.there)
+          this.track();      
+      },5000);
 
     }
 
     else{
       setTimeout(() => {
-      if(!this.there){
-        //this.track(); 
-        console.log("Checked");     
-      }
-    },5000);
+        if(!this.there){
+          //this.track(); 
+          console.log("Checked");     
+        }
+      },5000);
     }
     
   }
@@ -291,6 +296,32 @@ createTimeout(timeout) {
     setTimeout(() => resolve(null),timeout)
   })
 
+}
+
+back(){
+
+  let confirm = this.alertCtrl.create({
+    title: 'End Trip?',
+    message: 'Are you sure you would like to end this unfinished trip?',
+    buttons: [
+    {
+      text: 'Yes',
+      handler: () => {
+        this.storage.set('previous',false);
+        console.log('Left');
+        this.navCtrl.pop();
+
+      }
+    },
+    {
+      text: 'No',
+      handler: () => {
+        console.log('Right');
+      }
+    }
+    ]
+  });
+  confirm.present();
 }
 
 }
