@@ -1,27 +1,46 @@
 <ion-header>
   <ion-navbar color="tax">
    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>
-      Passengers
-    </ion-title>
-  </ion-navbar>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+  <ion-title>
+    Passengers
+  </ion-title>
+</ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-list>
+  <ion-searchbar
+  [(ngModel)]="search"
+  [showCancelButton]="shouldShowCancel"
+  (ionInput)="onInput($event)"
+  (ionCancel)="onCancel($event)">
+</ion-searchbar>
+<ion-list *ngIf="!searching">
   <div *ngIf="none"> No passengers available.</div>
-    <button ion-item *ngFor="let person of people" (click)="personTapped($event, person)">
-      <ion-icon [name]="person.status" item-left></ion-icon>
-      {{person.name}}
-      <div class="item-note" item-right>
-        {{person.distance}}km
-      </div>
+  <button ion-item *ngFor="let person of people" (click)="personTapped($event, person)" >
+    <ion-icon [name]="person.status" item-left></ion-icon>
+    {{person.name}}
+    <div class="item-note" item-right>
+      {{person.distance}}km
+    </div>
 
-      
-    </button>
-  </ion-list>
-  <button ion-button clear (click)='confirm()' *ngIf="!none">Confirm</button>
+
+  </button>
+</ion-list>
+
+<ion-list *ngIf="searching">
+  <div *ngIf="none"> No passengers available.</div>
+  <button ion-item *ngFor="let person of searches" (click)="personTapped($event, person)" >
+    <ion-icon [name]="person.status" item-left></ion-icon>
+    {{person.name}}
+    <div class="item-note" item-right>
+      {{person.distance}}km
+    </div>
+
+
+  </button>
+</ion-list>
+<button ion-button clear (click)='confirm()' *ngIf="!none">Confirm</button>
  <!-- <div *ngIf="selectedItem" padding>
     You navigated here from <b>{{selectedItem.title}}</b>
   </div> -->

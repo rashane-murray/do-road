@@ -16,7 +16,7 @@
 
   <ion-buttons end>
     <button ion-button icon-only (click)='add()'>
-    <ion-icon name="add"></ion-icon>
+      <ion-icon name="add"></ion-icon>
     </button>
   </ion-buttons>
 </ion-navbar>
@@ -53,6 +53,9 @@
   <ion-list>
     <button ion-item *ngFor="let car of cars" (click)="options($event, car)">      
       {{car.brand}}
+      <div class="item-note" item-right>
+      {{car.license}}
+      </div>
     </button>
   </ion-list>
 

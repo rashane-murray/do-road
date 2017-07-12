@@ -14,13 +14,17 @@ import { Storage } from '@ionic/storage';
   templateUrl: 'waiting.html',
 })
 export class WaitingPage {
+  search;
   latLng;
+  searching=false;
   none=true;
   passengers: Array<{name:string, distance: string, time: string, id: string, status:string}>;
+  searches = [];
   people = [{name:'Yuki', distance: 5, time: '15 mins', id: '43455654', status:'body', lat: 18.004, long: -76.856},{name:'Mira', distance: 2, time: '5 mins', id: '4929433', status:'body', lat: 18.0032, long: -76.7452},{name:'Jace', distance: 13, time: '53 min', id: '3433434', status:'body', lat:18.0187, long: -76.7445},{name:'Suna', distance: '74', time: '1 hr 13 mins', id: '5342545', status:'body', lat: 17.9422, long: -77.2333},{name:'Hugh', distance: 0.7, time: '2 mins', id: '43434641', status:'body', lat: 18.0213, long: -76.7692}];
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public storage: Storage, public toastCtrl: ToastController, public load: LoadingController) {
     // If we navigated to this page, we will have an item available as a nav param
     menu.swipeEnable(false);
+    
     this.empty();
     this.people.sort(this.sortpeople);
     // Let's populate this page with some filler content for funzies
@@ -101,6 +105,7 @@ export class WaitingPage {
     }
     this.passengers = [];
     this.empty()
+    this.searching=false;
 
   }
 
@@ -111,6 +116,18 @@ export class WaitingPage {
       position: 'top'
     });
     toast.present();
+  }
+
+  onInput(event){
+    this.searching =true;
+    this.searches =[];
+    this.people.forEach(item => this.match(item));
+
+  }
+
+  match(item){
+    if (item.name.toUpperCase().indexOf(this.search.toUpperCase())!=-1)
+      this.searches.push(item);
   }
 
  
