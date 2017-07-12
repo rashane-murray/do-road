@@ -28,6 +28,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 
 import {HttpModule} from '@angular/http';
 import { Network } from '@ionic-native/network';
+import { Push } from '@ionic-native/push';
 
 
 @NgModule({
@@ -70,7 +71,6 @@ import { Network } from '@ionic-native/network';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
     GooglePlus,
     GoogleMaps,
     Geolocation,
@@ -80,7 +80,9 @@ import { Network } from '@ionic-native/network';
     TextToSpeech,
     BackgroundGeolocation,
     NativeStorage,
-    Network
+    Network,
+    Push,
+    {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 export class AppModule {}
