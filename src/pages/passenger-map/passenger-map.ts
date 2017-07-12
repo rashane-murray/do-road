@@ -1,14 +1,9 @@
 import { Component, ViewChild, ElementRef} from '@angular/core';
 import { IonicPage } from 'ionic-angular';
-import { NavController, ToastController, AlertController, NavParams } from 'ionic-angular';
+import { NavController, ToastController, AlertController, NavParams} from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
-import { UserProvider } from '../../providers/user/user';
-import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { Storage } from '@ionic/storage';
-import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation';
-import { NativeStorage } from '@ionic-native/native-storage';
-import { ListPage } from '../list/list';
 
 
 declare var google, navigator;
@@ -41,7 +36,7 @@ export class PassengerMapPage {
 
 
 
-  constructor(public navCtrl: NavController, public platform: Platform, public user: UserProvider, public geolocation: Geolocation, public tts: TextToSpeech, public toastCtrl: ToastController, public storage: Storage, public bkgrnd: BackgroundGeolocation, public alt: AlertController, public stg: NativeStorage, public params: NavParams) {
+  constructor(public navCtrl: NavController, public platform: Platform, public geolocation: Geolocation, public toastCtrl: ToastController, public storage: Storage, public alt: AlertController, public params: NavParams) {
 
     this.platform.ready().then(() => this.onPlatformReady());
   }

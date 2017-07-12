@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, MenuController, ToastController, LoadingController, AlertController} from 'ionic-angular';
-import { NativeStorage } from '@ionic-native/native-storage';
 import { Storage } from '@ionic/storage';
 import { RoadMap } from '../map/map';
 
@@ -9,9 +8,11 @@ import { RoadMap } from '../map/map';
   templateUrl: 'list.html'
 })
 export class ListPage {
+  show: boolean = false;
+  person;
   latLng;
   passengers: Array<{name:string, distance: string, time: string, id: string, status:string}>;
-  people = [{name:'Yuki', distance: 5, time: '15 mins', id: '43455654', status:'body', lat: 18.004, long: -76.856},{name:'Mira', distance: 2, time: '5 mins', id: '4929433', status:'body', lat: 18.0032, long: -76.7452},{name:'Jace', distance: 13, time: '53 min', id: '3433434', status:'body', lat:18.0187, long: -76.7445},{name:'Suna', distance: '74', time: '1 hr 13 mins', id: '5342545', status:'body', lat: 17.9422, long: -77.2333},{name:'Hugh', distance: 0.7, time: '2 mins', id: '43434641', status:'body', lat: 18.0213, long: -76.7692}];
+  people = [{name:'Yuki', distance: 5, time: '15 mins', id: '43455654', status:'body', lat: 18.004, long: -76.856, phone:"876-432-1348"},{name:'Mira', distance: 2, time: '5 mins', id: '4929433', status:'body', lat: 18.0032, long: -76.7452, phone:"876-892-4371"},{name:'Jace', distance: 13, time: '53 min', id: '3433434', status:'body', lat:18.0187, long: -76.7445, phone:"876-398-1968"},{name:'Suna', distance: '74', time: '1 hr 13 mins', id: '5342545', status:'body', lat: 17.9422, long: -77.2333, phone: "876-239-1072"},{name:'Hugh', distance: 0.7, time: '2 mins', id: '43434641', status:'body', lat: 18.0213, long: -76.7692, phone:"876-438-9431"}];
   constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public storage: Storage, public toastCtrl: ToastController, public load: LoadingController, public alertCtrl: AlertController) {
     // If we navigated to this page, we will have an item available as a nav param
     menu.swipeEnable(false);
@@ -137,5 +138,12 @@ export class ListPage {
 
   }
 
+  details(event, person){
+    this.show = true;
+    this.person = person;
+  }
 
+ invisible(){
+     this.show = false;
+   }
 }

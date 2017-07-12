@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 
 import { NavController, NavParams } from 'ionic-angular';
-import {Create} from '../create/create';
+
 
 import { PassengerMapPage } from "../passenger-map/passenger-map";
-import { RoadMap } from '../map/map';
 import { ListPage } from '../list/list';
 import { VehiclesPage } from '../vehicles/vehicles';
 import { WaitingPage } from "../waiting/waiting";
