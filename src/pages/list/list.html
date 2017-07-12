@@ -11,8 +11,26 @@
 </ion-header>
 
 <ion-content>
+  <ion-card *ngIf="show">
+
+    <ion-card-header>
+      Details
+    </ion-card-header>
+
+    <ion-card-content>
+     <ion-fab right top *ngIf="show">
+    <button ion-fab mini color="light" (click)='invisible()'>
+      <ion-icon name="close-circle"></ion-icon>
+    </button>
+  </ion-fab>
+        <div>Name: {{person.name}}</div>
+      <div>Model: {{person.phone}}</div>
+    </ion-card-content>
+
+  </ion-card>
+
   <ion-list>
-    <button ion-item *ngFor="let person of people" (click)="personTapped($event, person)">
+    <button ion-item *ngFor="let person of people" (click)="personTapped($event, person)" (press)="details($event,person)">
       <ion-icon [name]="person.status" item-left></ion-icon>
       {{person.name}}
       <div class="item-note" item-right>

@@ -1,27 +1,66 @@
 <ion-header>
   <ion-navbar color="tax">
    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>
-      Passengers
-    </ion-title>
-  </ion-navbar>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+  <ion-title>
+    Passengers
+  </ion-title>
+</ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-list>
-  <div *ngIf="none"> No passengers available.</div>
-    <button ion-item *ngFor="let person of people" (click)="personTapped($event, person)">
-      <ion-icon [name]="person.status" item-left></ion-icon>
-      {{person.name}}
-      <div class="item-note" item-right>
-        {{person.distance}}km
-      </div>
+  <ion-searchbar
+  [(ngModel)]="search"
+  [showCancelButton]="shouldShowCancel"
+  (ionInput)="onInput($event)"
+  (ionCancel)="onCancel($event)">
+</ion-searchbar>
 
-      
+
+
+  <ion-card *ngIf="show">
+
+    <ion-card-header>
+      Details
+    </ion-card-header>
+
+    <ion-card-content>
+     <ion-fab right *ngIf="show">
+    <button ion-fab mini color="light" (click)='invisible()' clear>
+      <ion-icon name="close-circle"></ion-icon>
     </button>
-  </ion-list>
-  <button ion-button clear (click)='confirm()' *ngIf="!none">Confirm</button>
+  </ion-fab>
+        <div>Name: {{person.name}}</div>
+      <div>Model: {{person.phone}}</div>
+    </ion-card-content>
+
+  </ion-card>
+<ion-list *ngIf="!searching">
+  <div *ngIf="none"> No passengers available.</div>
+  <button ion-item *ngFor="let person of people" (click)="personTapped($event, person)" (press)="details($event,person)" >
+    <ion-icon [name]="person.status" item-left></ion-icon>
+    {{person.name}}
+    <div class="item-note" item-right>
+      {{person.distance}}km
+    </div>
+
+
+  </button>
+</ion-list>
+
+<ion-list *ngIf="searching">
+  <div *ngIf="none"> No passengers available.</div>
+  <button ion-item *ngFor="let person of searches" (click)="personTapped($event, person)" >
+    <ion-icon [name]="person.status" item-left></ion-icon>
+    {{person.name}}
+    <div class="item-note" item-right>
+      {{person.distance}}km
+    </div>
+
+
+  </button>
+</ion-list>
+<button ion-button clear (click)='confirm()' *ngIf="!none">Confirm</button>
  <!-- <div *ngIf="selectedItem" padding>
     You navigated here from <b>{{selectedItem.title}}</b>
   </div> -->

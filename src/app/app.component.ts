@@ -22,6 +22,8 @@ export class MyApp {
   rootPage:any = HomePage;
   pages: Array<{title: string, component: any}>;
   loader;
+   state;
+  backgroundLocation;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,  public load: LoadingController, public geolocation: Geolocation, public storage: Storage, public bkgrnd: BackgroundGeolocation, public toastCtrl: ToastController, public stg: NativeStorage, public network: Network, public push: Push, public alertCtrl: AlertController) {
     this.initializeApp();   
@@ -48,7 +50,28 @@ export class MyApp {
         else{
           this.rootPage=UserPage;
           this.storage.set('locate', true);
-          this.locate();
+          this.storage.get('autoLocate').then(val => {
+            if(val){
+              this.backgroundLocation = "ON";
+              this.locate();
+            }
+            else
+              this.backgroundLocation = "OFF";
+          }).catch(err => { 
+            this.storage.set('autoLocate', true)
+            this.backgroundLocation = "ON";
+            this.locate;
+          });
+
+          this.storage.get('status').then(val => {
+            if (val)
+              this.state = "Available";
+            else
+              this.state = "Unavailable";
+          }).catch(err => {
+            this.state = "Available";
+            this.storage.set('status', true);
+          })
 
         }
       }).catch((err) => {
@@ -161,6 +184,30 @@ let connectSubscription = this.network.onConnect().subscribe(() => {
       content: "Checking for signed in account"
     });
     this.loader.present();
+  }
+
+  trackingToggle(){
+    if (this.backgroundLocation=='ON'){
+      this.backgroundLocation = 'OFF';
+      this.bkgrnd.stop();
+      this.storage.set('locate', false);
+    }
+    else{
+      this.backgroundLocation='ON';
+      this.storage.set('locate', true);
+      this.locate();
+    }
+  }
+
+  statusChange(){
+    if (this.state == "Available"){
+      this.state = "Unavailable"
+      this.storage.set('status', false);
+    }
+    else {
+      this.state = "Available"
+      this.storage.set('status', true);
+    }
   }
 }
 
