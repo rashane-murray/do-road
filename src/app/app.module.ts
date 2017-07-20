@@ -14,6 +14,8 @@ import { VehicleViewPage } from '../pages/vehicle-view/vehicle-view';
 import { PassengerMapPage } from "../pages/passenger-map/passenger-map";
 import { WaitingPage } from "../pages/waiting/waiting";
 import { AddVehiclePage } from '../pages/add-vehicle/add-vehicle';
+import { CompletedTripsPage } from '../pages/completed-trips/completed-trips';
+import { ReviewPage } from '../pages/review/review';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -45,7 +47,9 @@ import { Push } from '@ionic-native/push';
     AbsoluteDragDirective,
     VehicleViewPage,
     PassengerMapPage,
-    WaitingPage
+    WaitingPage,
+    CompletedTripsPage,
+    ReviewPage
   ],
   imports: [
     BrowserModule,
@@ -66,7 +70,9 @@ import { Push } from '@ionic-native/push';
     AddVehiclePage,
     VehicleViewPage,
     PassengerMapPage,
-    WaitingPage
+    WaitingPage,
+    CompletedTripsPage,
+    ReviewPage
   ],
   providers: [
     StatusBar,

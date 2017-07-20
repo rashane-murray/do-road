@@ -7,6 +7,7 @@ import { PassengerMapPage } from "../passenger-map/passenger-map";
 import { ListPage } from '../list/list';
 import { VehiclesPage } from '../vehicles/vehicles';
 import { WaitingPage } from "../waiting/waiting";
+import { CompletedTripsPage } from '../completed-trips/completed-trips'
 
 
 
@@ -28,6 +29,7 @@ tab1 = ListPage;
 tab2 = PassengerMapPage;
 tab3 = VehiclesPage;
 tab4 = WaitingPage;
+tab5 = CompletedTripsPage;
 
 
 constructor(public navCtrl: NavController, public navParams: NavParams) {
