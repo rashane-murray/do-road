@@ -40,31 +40,11 @@ export class SignIn {
     this.navCtrl.setRoot(UserPage);
   }
 
+  //Checks databse if user credentials match with any in database
   check() {
-    // this.loopFunction(0);
-
-    /**let timed = 0
-    while(timed < 5){
-    console.log('Start');
-    setTimeout(function () {
-      }, 10000);
-    console.log('End')
-    timed++;
-  }*/
-    // this.storage.set("logged", "name");
-    //this.navCtrl.setRoot(UserPage);
-    /**  let timed = 0;
-    while (true){
-      console.log(timed)
-    setTimeout(() => {}, 3000);
-    timed+=1;
-
-  }*/
-
     let headers = new Headers();
     headers.append("content-type", "application/json");
     let dat = { name: "DoRoad", email: "test@email.com", password: "hashed" };
-   
 
     //'http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/drivercoordinates'
     //http://posttestserver.com/post.php
@@ -95,8 +75,9 @@ export class SignIn {
       );
   }
 
-  gps(){
-     let headers = new Headers();
+  //test for posting driver gps coordinates to database
+  gps() {
+    let headers = new Headers();
     headers.append("content-type", "application/json");
     let coord = {
       name: "DoRoad",
@@ -134,7 +115,6 @@ export class SignIn {
           alert.present();
         }
       );
-
   }
 
   loopFunction(number) {
@@ -149,6 +129,7 @@ export class SignIn {
     console.log("Another one");
   }
 
+  //Returns user to homepage
   cancel() {
     this.navCtrl.setRoot(HomePage);
   }

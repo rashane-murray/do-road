@@ -1,13 +1,16 @@
-import { Component, ViewChild, ElementRef} from '@angular/core';
-import { IonicPage } from 'ionic-angular';
-import { NavController, ToastController, AlertController, NavParams} from 'ionic-angular';
-import { Platform } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
-import { Storage } from '@ionic/storage';
-
+import { Component, ViewChild, ElementRef } from "@angular/core";
+import { IonicPage } from "ionic-angular";
+import {
+  NavController,
+  ToastController,
+  AlertController,
+  NavParams
+} from "ionic-angular";
+import { Platform } from "ionic-angular";
+import { Geolocation } from "@ionic-native/geolocation";
+import { Storage } from "@ionic/storage";
 
 declare var google, navigator;
-
 
 /**
  * Generated class for the PassengerMapPage page.
@@ -17,101 +20,138 @@ declare var google, navigator;
  */
 @IonicPage()
 @Component({
-  selector: 'page-passenger-map',
-  templateUrl: 'passenger-map.html',
+  selector: "page-passenger-map",
+  templateUrl: "passenger-map.html"
 })
 export class PassengerMapPage {
-
-  @ViewChild('map') mapElement;
+  @ViewChild("map") mapElement;
   map: any;
   latLng;
   currentLatLng;
 
   markerArray = [];
- 
+
   marker;
 
-  waiting = [{name:'Yuki', distance: 5, time: '15 mins', id: '43455654', status:'body', lat: 18.004, long: -76.856},{name:'Mira', distance: 2, time: '5 mins', id: '4929433', status:'body', lat: 18.0032, long: -76.7452},{name:'Jace', distance: 13, time: '53 min', id: '3433434', status:'body', lat:18.0187, long: -76.7445},{name:'Suna', distance: '74', time: '1 hr 13 mins', id: '5342545', status:'body', lat: 17.9422, long: -77.2333},{name:'Hugh', distance: 0.7, time: '2 mins', id: '43434641', status:'body', lat: 18.0213, long: -76.7692}];
+  waiting = [
+    {
+      name: "Yuki",
+      distance: 5,
+      time: "15 mins",
+      id: "43455654",
+      status: "body",
+      lat: 18.004,
+      long: -76.856
+    },
+    {
+      name: "Mira",
+      distance: 2,
+      time: "5 mins",
+      id: "4929433",
+      status: "body",
+      lat: 18.0032,
+      long: -76.7452
+    },
+    {
+      name: "Jace",
+      distance: 13,
+      time: "53 min",
+      id: "3433434",
+      status: "body",
+      lat: 18.0187,
+      long: -76.7445
+    },
+    {
+      name: "Suna",
+      distance: "74",
+      time: "1 hr 13 mins",
+      id: "5342545",
+      status: "body",
+      lat: 17.9422,
+      long: -77.2333
+    },
+    {
+      name: "Hugh",
+      distance: 0.7,
+      time: "2 mins",
+      id: "43434641",
+      status: "body",
+      lat: 18.0213,
+      long: -76.7692
+    }
+  ];
   show = false;
 
-
-
-  constructor(public navCtrl: NavController, public platform: Platform, public geolocation: Geolocation, public toastCtrl: ToastController, public storage: Storage, public alt: AlertController, public params: NavParams) {
-
+  constructor(
+    public navCtrl: NavController,
+    public platform: Platform,
+    public geolocation: Geolocation,
+    public toastCtrl: ToastController,
+    public storage: Storage,
+    public alt: AlertController,
+    public params: NavParams
+  ) {
     this.platform.ready().then(() => this.onPlatformReady());
   }
 
+  private onPlatformReady(): void {}
 
-  private onPlatformReady(): void {
-    
-    
-  }
-
-
-  ionViewDidLoad(){
+  ionViewDidLoad() {
     this.loadMap();
   }
 
+  loadMap() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.latLng = new google.maps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        );
 
+        console.log(
+          "" + position.coords.longitude + ":..." + position.coords.latitude
+        );
+        let mapOptions = {
+          center: this.latLng,
+          zoom: 15,
+          mpTypeId: google.maps.MapTypeId.ROADMAP
+        };
 
-  loadMap(){
-    //setTimeout(this.testThread(),3000);
-    navigator.geolocation.getCurrentPosition((position) => {
-
-      this.latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      
-      console.log(""+ position.coords.longitude+":..." + position.coords.latitude);
-      let mapOptions = {
-        center: this.latLng,
-        zoom: 15,
-        mpTypeId: google.maps.MapTypeId.ROADMAP
+        this.map = new google.maps.Map(
+          this.mapElement.nativeElement,
+          mapOptions
+        );
+        this.setMarkers();
+      },
+      err => {
+        console.log(err);
       }
+    );
+  }
 
-     
-
-      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-      this.setMarkers();
-
-
-    }, (err) => {
-      console.log(err);
+  addMarker() {
+    this.marker = new google.maps.Marker({
+      position: this.currentLatLng,
+      map: this.map
     });
   }
 
-  
-
-
- 
-
-addMarker(){
-
-  this.marker = new google.maps.Marker({
-    position: this.currentLatLng,
-    map: this.map
-  });
-
-
-}
-
-/**attachInstructionText(marker, text) {
+  /**attachInstructionText(marker, text) {
   google.maps.event.addListener((marker) => {
     this.stepDisplay.setContent(text);
     this.stepDisplay.open(this.map, marker);
   });*/
 
-  setMarkers(){
-
-    for (let x = 0; x<this.waiting.length; x++){
+  //Place markers for available passengers
+  setMarkers() {
+    for (let x = 0; x < this.waiting.length; x++) {
       this.marker = new google.maps.Marker({
-        position: new google.maps.LatLng(this.waiting[x].lat, this.waiting[x].long),
+        position: new google.maps.LatLng(
+          this.waiting[x].lat,
+          this.waiting[x].long
+        ),
         map: this.map
       });
-
     }
-
   }
-
- 
-
 }
-
