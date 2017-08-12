@@ -67,7 +67,7 @@ export class Create {
 
     this.http
       .post(
-        "http://192.241.203.121:3000/mdl/api/v1/mobile/post/register/driver",
+        "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/register/driver",
         JSON.stringify(info),
         { headers: headers }
       )

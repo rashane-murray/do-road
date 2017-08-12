@@ -44,6 +44,7 @@ export class RoadMap {
   num;
   passengers;
   directResults;
+  pickup;
 
   constructor(
     public navCtrl: NavController,
@@ -107,6 +108,7 @@ export class RoadMap {
 
   //Sets destination and waypoints of journey
   passenger() {
+    this.pickup = true;
     this.passengers = this.params.get("passengers");
     let last = this.passengers.length - 1;
     this.destination = new google.maps.LatLng(
@@ -119,6 +121,26 @@ export class RoadMap {
         location: new google.maps.LatLng(
           this.passengers[x].lat,
           this.passengers[x].long
+        ),
+        stopover: true
+      });
+    }
+
+    this.calcRoute();
+  }
+
+  passengerDestination() {
+    let last = this.passengers.length - 1;
+    this.destination = new google.maps.LatLng(
+      this.passengers[last].destLat,
+      this.passengers[last].destLong
+    );
+
+    for (let x = 0; x < last; x++) {
+      this.waypoints.push({
+        location: new google.maps.LatLng(
+          this.passengers[x].destLat,
+          this.passengers[x].destLong
         ),
         stopover: true
       });
@@ -175,8 +197,13 @@ export class RoadMap {
 
   //Loads steps for each leg of journey
   showSteps(passenger) {
-    if (passenger >= this.passengers.length) console.log("Finished");
-    else {
+    if (passenger >= this.passengers.length) {
+      console.log("Finished");
+      if (this.pickup) {
+        this.pickup = false;
+        this.passengerDestination();
+      }
+    } else {
       //Checks to see if each passenger has been picked up
       this.there = false; //Resets before each leg begins
 
@@ -239,7 +266,7 @@ export class RoadMap {
     toast.present();
   }
 
-  //Code below to track driver during pickup
+  //Track driver during pickup
 
   track(passenger) {
     this.addMarker();
@@ -249,12 +276,16 @@ export class RoadMap {
 
   //Loads directions for current leg of journey
   directions(passenger) {
+    let dest = null;
+    if (this.pickup){
+      dest =  new google.maps.LatLng(this.passengers[passenger].lat,this.passengers[passenger].long)
+    }
+    else
+      dest =  new google.maps.LatLng(this.passengers[passenger].destLat,this.passengers[passenger].destLong)
+
     let request = {
       origin: this.currentLatLng,
-      destination: new google.maps.LatLng(
-        this.passengers[passenger].lat,
-        this.passengers[passenger].long
-      ),
+      destination: dest,
       travelMode: "DRIVING",
       drivingOptions: {
         departureTime: new Date(),
@@ -266,9 +297,11 @@ export class RoadMap {
       if (status == "OK") {
         this.steps(result, passenger);
       } else console.log(status);
-      //else return c;
+      
     });
   }
+
+
 
   //Updates current location of driver
   pos() {

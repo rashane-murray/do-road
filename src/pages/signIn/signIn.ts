@@ -51,7 +51,7 @@ export class SignIn {
     //http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/login/driver
     this.http
       .post(
-        "http://192.241.203.121:3000/mdl/api/v1/mobile/post/login/driver",
+        "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/login/driver",
         JSON.stringify(dat),
         { headers: headers }
       )
@@ -91,9 +91,10 @@ export class SignIn {
     //'http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/drivercoordinates'
     //http://posttestserver.com/post.php
     //http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/login/driver
+    //192.241.203.121:3000
     this.http
       .post(
-        "http://192.241.203.121:3000/mdl/api/v1/mobile/post/drivercoordinates",
+        "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/drivercoordinates",
         JSON.stringify(coord),
         { headers: headers }
       )

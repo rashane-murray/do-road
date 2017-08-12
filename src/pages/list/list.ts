@@ -34,7 +34,9 @@ export class ListPage {
       status: "body",
       lat: 18.004,
       long: -76.856,
-      phone: "876-432-1348"
+      phone: "876-432-1348",
+      destLat: 18.0032,
+      destLong: -76.7452
     },
     {
       name: "Mira",
@@ -44,7 +46,9 @@ export class ListPage {
       status: "body",
       lat: 18.0032,
       long: -76.7452,
-      phone: "876-892-4371"
+      phone: "876-892-4371",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Jace",
@@ -54,7 +58,9 @@ export class ListPage {
       status: "body",
       lat: 18.0187,
       long: -76.7445,
-      phone: "876-398-1968"
+      phone: "876-398-1968",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Suna",
@@ -64,7 +70,9 @@ export class ListPage {
       status: "body",
       lat: 17.9422,
       long: -77.2333,
-      phone: "876-239-1072"
+      phone: "876-239-1072",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Hugh",
@@ -74,7 +82,9 @@ export class ListPage {
       status: "body",
       lat: 18.0213,
       long: -76.7692,
-      phone: "876-438-9431"
+      phone: "876-438-9431",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Sarah",
@@ -84,7 +94,9 @@ export class ListPage {
       status: "body",
       lat: 18.0145092,
       long: -76.7504757,
-      phone: "876-438-9431"
+      phone: "876-438-9431",
+      destLat: 18.0032,
+      destLong: -76.7452
     }
   ];
   constructor(
