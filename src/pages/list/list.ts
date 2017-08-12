@@ -34,7 +34,9 @@ export class ListPage {
       status: "body",
       lat: 18.004,
       long: -76.856,
-      phone: "876-432-1348"
+      phone: "876-432-1348",
+      destLat: 18.0032,
+      destLong: -76.7452
     },
     {
       name: "Mira",
@@ -44,7 +46,9 @@ export class ListPage {
       status: "body",
       lat: 18.0032,
       long: -76.7452,
-      phone: "876-892-4371"
+      phone: "876-892-4371",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Jace",
@@ -54,7 +58,9 @@ export class ListPage {
       status: "body",
       lat: 18.0187,
       long: -76.7445,
-      phone: "876-398-1968"
+      phone: "876-398-1968",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Suna",
@@ -64,7 +70,9 @@ export class ListPage {
       status: "body",
       lat: 17.9422,
       long: -77.2333,
-      phone: "876-239-1072"
+      phone: "876-239-1072",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Hugh",
@@ -74,7 +82,9 @@ export class ListPage {
       status: "body",
       lat: 18.0213,
       long: -76.7692,
-      phone: "876-438-9431"
+      phone: "876-438-9431",
+      destLat: 18.004,
+      destLong: -76.856
     },
     {
       name: "Sarah",
@@ -84,7 +94,9 @@ export class ListPage {
       status: "body",
       lat: 18.0145092,
       long: -76.7504757,
-      phone: "876-438-9431"
+      phone: "876-438-9431",
+      destLat: 18.0032,
+      destLong: -76.7452
     }
   ];
   constructor(
@@ -99,8 +111,9 @@ export class ListPage {
     // If we navigated to this page, we will have an item available as a nav param
     menu.swipeEnable(false);
     this.people.sort(this.sortpeople);
-    // Let's populate this page with some filler content for funzies
+
     this.passengers = [];
+    //Checks if the app was exited before a trip was finished
     this.storage.get("previous").then(val => {
       if (val) {
         this.storage.get("trip").then(data => {
@@ -108,18 +121,9 @@ export class ListPage {
         });
       }
     });
-    //this.storage.set('Travelling',this.passengers);
-    /**for (let i = 1; i < 11; i++) {
-      this.passengers.push({
-        name: 'Person ' + i,
-        distance: i + "km",
-        time: '1hr',
-        id: '0000',
-        status: 'body'
-      });
-    }*/
   }
 
+  //Selects or deselect a user to pickup on the next rip
   personTapped(event, person) {
     if (person.status == "body") {
       person.status = "car";
@@ -139,6 +143,7 @@ export class ListPage {
     }
   }
 
+  //Removes user from list of approved passenger
   removepassenger(person) {
     var index = this.passengers.indexOf(person, 0);
     if (index > -1) {
@@ -146,6 +151,7 @@ export class ListPage {
     }
   }
 
+  //When a user request has been accepted they are removed from the request list
   removePerson(person) {
     var index = this.people.indexOf(person, 0);
     if (index > -1) {
@@ -153,12 +159,14 @@ export class ListPage {
     }
   }
 
+  //Sorts list by passengers distance from driver
   sortpeople(pass1, pass2) {
     if (pass1.distance < pass2.distance) return -1;
     if (pass1.distance == pass2.distance) return 0;
     if (pass1.distance > pass2.distance) return 1;
   }
 
+  //Confirms selected users for the next trip
   confirm() {
     setTimeout(() => {
       this.toasting("Ready to go!");
@@ -182,6 +190,7 @@ export class ListPage {
     toast.present();
   }
 
+  //Continues previous trip
   previousTrip(data) {
     let confirm = this.alertCtrl.create({
       title: "Previous Trip?",
@@ -207,11 +216,13 @@ export class ListPage {
     confirm.present();
   }
 
+  //Sets data to be displayed for a person's detail
   details(event, person) {
     this.show = true;
     this.person = person;
   }
 
+  //Toggles visibilty of card showing user information
   invisible() {
     this.show = false;
   }

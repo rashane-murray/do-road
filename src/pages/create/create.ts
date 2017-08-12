@@ -40,13 +40,12 @@ export class Create {
     if (this.check()) {
       console.log("Worked");
       this.iCol = "#999";
-      this.register();
+      this.register(); //Add new user to database
     } else {
       this.mark();
       let alert = this.alertCtrl.create({
         title: this.errorTitle,
         subTitle: "Please fill in highlighted fields"
-        //cssClass: 'alertStyle'
       });
       alert.present();
     }
@@ -61,14 +60,14 @@ export class Create {
       firstName: this.fName,
       lastName: this.lName,
       email: this.email,
-      password: (this.pass),
+      password: this.pass,
       phone: this.number,
       utc_timestamp: "14000000"
     };
 
     this.http
       .post(
-        "http://192.241.203.121:3000/mdl/api/v1/mobile/post/register/driver",
+        "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/register/driver",
         JSON.stringify(info),
         { headers: headers }
       )
@@ -92,6 +91,7 @@ export class Create {
       );
   }
 
+  //Checks if any field is not filled in
   check() {
     this.fix();
     if (!this.fName) this.missing.push(1);
@@ -105,10 +105,12 @@ export class Create {
     else return false;
   }
 
+  //Goes through list of missing fields to highlight
   mark() {
     while (this.missing.length != 0) this.colored(this.missing.pop());
   }
 
+  //Highlights required fields not filled in
   colored(n: number) {
     if (n == 1) this.fCol = "#f53d3d";
     else if (n == 2) this.lCol = "#f53d3d";
@@ -118,6 +120,7 @@ export class Create {
     else if (n == 6) this.iCol = "#f53d3d";
   }
 
+  //Revert highlighted field to normal color when filled in correctly
   fix() {
     this.fCol = "#999";
     this.lCol = "#999";
@@ -127,6 +130,7 @@ export class Create {
     this.iCol = "#999";
   }
 
+  //encrypts password
   encrypty(word) {
     var words = CryptoJS.enc.Utf8.parse("Testing"); // WordArray object
     var obj = CryptoJS.enc.Base64.stringify(words);

@@ -57,14 +57,15 @@ export class MyApp {
       this.internetCheck();
       this.pages = [{ title: "Logout", component: HomePage }];
 
+      // Checks to see if a user was logged in previously
       this.storage
         .get("logged")
         .then(val => {
           console.log(val);
           if (val == null) this.rootPage = HomePage;
           else {
-            this.rootPage = UserPage;
-            this.storage.set("locate", true);
+            this.rootPage = UserPage; //Logs user into app
+
             this.storage
               .get("autoLocate")
               .then(val => {
@@ -74,12 +75,14 @@ export class MyApp {
                 } else this.backgroundLocation = "OFF";
               })
               .catch(err => {
+                //Turns on background location tracker
                 this.storage.set("autoLocate", true);
                 this.backgroundLocation = "ON";
                 this.locate;
               });
 
             this.storage
+              //Checks drivers last availibilty status
               .get("status")
               .then(val => {
                 if (val) this.state = "Available";
@@ -99,6 +102,7 @@ export class MyApp {
     });
   }
 
+  //Sets up app to recieve push notifications
   pushsetup() {
     const options: PushOptions = {
       android: {
@@ -133,6 +137,7 @@ export class MyApp {
       .subscribe(error => alert("Error with Push plugin" + error));
   }
 
+  //Starts the background location tracking
   locate() {
     const config: BackgroundGeolocationConfig = {
       desiredAccuracy: 10,
@@ -149,10 +154,11 @@ export class MyApp {
         let lon = "" + location.longitude;
         this.toasting(f);
 
-        this.stg.setItem("lat", f).then(() => this.toasting("Work")), error =>
-          this.toasting("Failed");
+        this.stg.setItem("lat", f).then(() => this.toasting("Work")), (
+          error //Stores driver's latitude
+        ) => this.toasting("Failed");
         this.stg
-          .setItem("long", lon)
+          .setItem("long", lon) //Stores driver's longittude
           .then(() => this.toasting("Work")), error => this.toasting("Failed");
       });
 
@@ -169,22 +175,20 @@ export class MyApp {
   }
 
   openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
     this.storage.remove("logged");
   }
 
   internetCheck() {
     let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-      this.toasting("network was disconnected :-(");
+      this.toasting("network was disconnected :-("); //Notifies user that the intenet was disconnected
     });
 
     let connectSubscription = this.network.onConnect().subscribe(() => {
       console.log("network connected!");
       setTimeout(() => {
         if (this.network.type === "wifi") {
-          this.toasting("we got a wifi connection, woohoo!");
+          this.toasting("we got a wifi connection, woohoo!"); //Notify user the interet is connected
         }
       }, 3000);
     });
@@ -197,6 +201,7 @@ export class MyApp {
     this.loader.present();
   }
 
+  //Allows the user to turn on/off background location tracking
   trackingToggle() {
     if (this.backgroundLocation == "ON") {
       this.backgroundLocation = "OFF";
@@ -209,6 +214,7 @@ export class MyApp {
     }
   }
 
+  //Allows the user to change their availibily status
   statusChange() {
     if (this.state == "Available") {
       this.state = "Unavailable";

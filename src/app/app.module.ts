@@ -27,7 +27,6 @@ import { AbsoluteDragDirective } from '../directives/absolute-drag/absolute-drag
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { NativeStorage } from '@ionic-native/native-storage';
-
 import {HttpModule} from '@angular/http';
 import { Network } from '@ionic-native/network';
 import { Push } from '@ionic-native/push';

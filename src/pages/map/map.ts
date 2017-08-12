@@ -44,6 +44,7 @@ export class RoadMap {
   num;
   passengers;
   directResults;
+  pickup;
 
   constructor(
     public navCtrl: NavController,
@@ -68,13 +69,13 @@ export class RoadMap {
   }
 
   loadMap() {
-    //setTimeout(this.testThread(),3000);
     navigator.geolocation.getCurrentPosition(
+      //gets latitude and longitude of driver
       position => {
         this.latLng = new google.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
-        );
+        ); //Sets gps coordinates to variable
         this.currentLatLng = this.latLng;
         console.log(
           "" + position.coords.longitude + ":..." + position.coords.latitude
@@ -90,13 +91,13 @@ export class RoadMap {
         this.map = new google.maps.Map(
           this.mapElement.nativeElement,
           mapOptions
-        );
+        ); //Initializes the map view
         this.directionsDisplay.setMap(this.map);
         this.directionsDisplay.setPanel(
           document.getElementById("directionsPanel")
         );
         this.stepDisplay = new google.maps.InfoWindow();
-        let p = this.params.get("passengers");
+        let p = this.params.get("passengers"); //Loads selected passengers
         console.log(JSON.stringify(p[0]));
       },
       err => {
@@ -105,7 +106,9 @@ export class RoadMap {
     );
   }
 
+  //Sets destination and waypoints of journey
   passenger() {
+    this.pickup = true;
     this.passengers = this.params.get("passengers");
     let last = this.passengers.length - 1;
     this.destination = new google.maps.LatLng(
@@ -126,9 +129,28 @@ export class RoadMap {
     this.calcRoute();
   }
 
+  passengerDestination() {
+    let last = this.passengers.length - 1;
+    this.destination = new google.maps.LatLng(
+      this.passengers[last].destLat,
+      this.passengers[last].destLong
+    );
+
+    for (let x = 0; x < last; x++) {
+      this.waypoints.push({
+        location: new google.maps.LatLng(
+          this.passengers[x].destLat,
+          this.passengers[x].destLong
+        ),
+        stopover: true
+      });
+    }
+
+    this.calcRoute();
+  }
+
+  //Calculate and display directions to destination on map
   calcRoute() {
-    // let start = document.getElementById('start');
-    // let end = document.getElementById('end');
     let request = {
       origin: this.latLng,
       destination: this.destination,
@@ -150,13 +172,18 @@ export class RoadMap {
     });
   }
 
+  //Gets time and distance to a passenger
   distTime(passenger) {
     let service = new google.maps.DistanceMatrixService();
     service.getDistanceMatrix(
       {
         origins: [this.latLng],
-        destinations: [new google.maps.LatLng(this.passengers[passenger].lat,
-        this.passengers[passenger].long)],
+        destinations: [
+          new google.maps.LatLng(
+            this.passengers[passenger].lat,
+            this.passengers[passenger].long
+          )
+        ],
         travelMode: "DRIVING"
       },
       this.callback
@@ -168,18 +195,20 @@ export class RoadMap {
     console.log(response.rows[0].elements[0].duration.text);
   }
 
+  //Loads steps for each leg of journey
   showSteps(passenger) {
-    if (passenger >= this.passengers.length) console.log("Finished");
-    else {
-      // For each step, place a marker, and add the text to the marker's
-      // info window. Also attach the marker to an array so we
-      // can keep track of it and remove it when calculating new
-      // routes.
+    if (passenger >= this.passengers.length) {
+      console.log("Finished");
+      if (this.pickup) {
+        this.pickup = false;
+        this.passengerDestination();
+      }
+    } else {
+      //Checks to see if each passenger has been picked up
+      this.there = false; //Resets before each leg begins
 
-      this.there = false;
-
-      this.myRoute = this.directResults.routes[0].legs[passenger];
-      this.numberOfSteps = this.myRoute.steps.length;
+      this.myRoute = this.directResults.routes[0].legs[passenger]; //Gets direction a leg of the journey
+      this.numberOfSteps = this.myRoute.steps.length; //Gets number of steps in the directions for a leg of the journey
 
       this.next = this.numberOfSteps - 1;
       /** for (let i = 0; i < this.myRoute.steps.length; i++) {
@@ -197,14 +226,16 @@ export class RoadMap {
 
       this.distTime(passenger);
       console.log(
-        passenger + "Number" + this.removeHTML(this.myRoute.steps[0].instructions)
+        passenger +
+          "Number" +
+          this.removeHTML(this.myRoute.steps[0].instructions)
       );
       let sentence = this.removeHTML(this.myRoute.steps[0].instructions);
-      this.tts.speak(sentence);
+      this.tts.speak(sentence); //Gives direction as speech
       //this.tts.speak(this.myRoute.steps[0].instructions)
       //.then(() => console.log('Success'))
       //.catch((reason: any) => console.log(reason));
-      this.track(passenger);
+      this.track(passenger); //Tracks the driver during the journey
     }
     /**attachInstructionText(marker, text) {
   google.maps.event.addListener((marker) => {
@@ -213,6 +244,7 @@ export class RoadMap {
   });*/
   }
 
+  //Adds marker to drivers current location
   addMarker() {
     this.marker = new google.maps.Marker({
       position: this.currentLatLng,
@@ -220,6 +252,7 @@ export class RoadMap {
     });
   }
 
+  //Remove HTML tags from text from direction instructions
   removeHTML(sentence) {
     return sentence.replace(/<(?:.|\n)*?>/gm, "");
   }
@@ -233,7 +266,7 @@ export class RoadMap {
     toast.present();
   }
 
-  //Code below to track driver during pickup
+  //Track driver during pickup
 
   track(passenger) {
     this.addMarker();
@@ -241,13 +274,18 @@ export class RoadMap {
     this.directions(passenger);
   }
 
+  //Loads directions for current leg of journey
   directions(passenger) {
+    let dest = null;
+    if (this.pickup){
+      dest =  new google.maps.LatLng(this.passengers[passenger].lat,this.passengers[passenger].long)
+    }
+    else
+      dest =  new google.maps.LatLng(this.passengers[passenger].destLat,this.passengers[passenger].destLong)
+
     let request = {
       origin: this.currentLatLng,
-      destination: new google.maps.LatLng(
-        this.passengers[passenger].lat,
-        this.passengers[passenger].long
-      ),
+      destination: dest,
       travelMode: "DRIVING",
       drivingOptions: {
         departureTime: new Date(),
@@ -259,10 +297,13 @@ export class RoadMap {
       if (status == "OK") {
         this.steps(result, passenger);
       } else console.log(status);
-      //else return c;
+      
     });
   }
 
+
+
+  //Updates current location of driver
   pos() {
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -277,25 +318,28 @@ export class RoadMap {
     );
   }
 
+  //Checks when at a new step in current leg
   steps(results, passenger) {
     if (!results) console.log("No results");
     else {
       let routeSteps = results.routes[0].legs[0];
       let length = routeSteps.steps.length;
       if (length <= 1) {
+        //Last step of leg
         let stepInfo = this.removeHTML(routeSteps.steps[0].instructions);
         console.log(stepInfo);
-        this.tts.speak(stepInfo);
+        this.tts.speak(stepInfo); //Direction as speech
         let n = passenger + 1;
         this.toasting("Stop number " + n);
         this.endOfLeg(passenger);
       } else if (length <= this.next) {
-        this.next = length - 1;
+        //Checks if is time for the next step
+        this.next = length - 1; //Tracks which number step is next;
         let stepInfo = this.removeHTML(routeSteps.steps[0].instructions);
         console.log(stepInfo);
         this.tts.speak(stepInfo);
         setTimeout(() => {
-          if (!this.there) this.track(passenger);
+          if (!this.there) this.track(passenger); //Continues tracking with a time delay
         }, 5000);
       } else {
         setTimeout(() => {
@@ -309,6 +353,7 @@ export class RoadMap {
   }
 
   endOfLeg(passenger) {
+    //Notifies user that they are at the last step of the leg
     let confirm = this.alertCtrl.create({
       title: "Pick up confirmation",
       message: "Confirm when passenger has been pickd up",
@@ -317,7 +362,7 @@ export class RoadMap {
           text: "Yes",
           handler: () => {
             this.there = true;
-            this.showSteps(passenger+1);
+            this.showSteps(passenger + 1);
           }
         },
         {
@@ -328,10 +373,11 @@ export class RoadMap {
         }
       ]
     });
-    confirm.present();
+    confirm.present(); //user confirms whether the passenger has been picked up
   }
 
   back() {
+    //Ensures user confirms they want to end a trip to prevent accidentally termination
     let confirm = this.alertCtrl.create({
       title: "End Trip?",
       message: "Are you sure you would like to end this unfinished trip?",

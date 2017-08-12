@@ -18,23 +18,23 @@
 
 
 
-  <ion-card *ngIf="show">
+<ion-card *ngIf="show">
 
-    <ion-card-header>
-      Details
-    </ion-card-header>
+  <ion-card-header>
+    Details
+  </ion-card-header>
 
-    <ion-card-content>
-     <ion-fab right *ngIf="show">
+  <ion-card-content>
+   <ion-fab right *ngIf="show">
     <button ion-fab mini color="light" (click)='invisible()' clear>
       <ion-icon name="close-circle"></ion-icon>
     </button>
   </ion-fab>
-        <div>Name: {{person.name}}</div>
-      <div>Model: {{person.phone}}</div>
-    </ion-card-content>
+  <div>Name: {{person.name}}</div>
+  <div>Model: {{person.phone}}</div>
+</ion-card-content>
 
-  </ion-card>
+</ion-card>
 <ion-list *ngIf="!searching">
   <div *ngIf="none"> No passengers available.</div>
   <button ion-item *ngFor="let person of people" (click)="personTapped($event, person)" (press)="details($event,person)" >

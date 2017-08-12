@@ -17,7 +17,7 @@
 	<ion-list>
 		<button ion-item *ngFor="let user of users" (click)="tapped($event, user)" >    
 			{{user.name}}
-			<div class="item-note" item-right>
+			<div item-right>
 				{{user.date}}
 			</div>
 		</button>
