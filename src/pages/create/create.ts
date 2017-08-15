@@ -69,7 +69,8 @@ export class Create {
         lastname: this.lName,
         route: this.route,
         number: this.number,
-        govID: this.govID
+        govID: this.govID,
+        status: "Unavailable"
         //vehicle_type: "Dragon"
       },
       latitude: this.lat,

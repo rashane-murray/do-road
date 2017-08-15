@@ -11,6 +11,11 @@ import { Storage } from "@ionic/storage";
 import { RoadMap } from "../map/map";
 
 import { AngularFireAuth } from "angularfire2/auth";
+import {
+  AngularFireDatabase,
+  FirebaseListObservable
+} from "angularfire2/database";
+
 
 @Component({
   selector: "page-list",
@@ -20,6 +25,9 @@ export class ListPage {
   show: boolean = false;
   person;
   latLng;
+  lat;
+  long;
+  user;
   passengers: Array<{
     name: string;
     distance: string;
@@ -28,78 +36,78 @@ export class ListPage {
     status: string;
   }>;
   people = [
-    {
-      name: "Yuki",
-      distance: 5,
-      time: "15 mins",
-      id: "43455654",
-      status: "body",
-      lat: 18.004,
-      long: -76.856,
-      phone: "876-432-1348",
-      destLat: 18.0032,
-      destLong: -76.7452
-    },
-    {
-      name: "Mira",
-      distance: 2,
-      time: "5 mins",
-      id: "4929433",
-      status: "body",
-      lat: 18.0032,
-      long: -76.7452,
-      phone: "876-892-4371",
-      destLat: 18.004,
-      destLong: -76.856
-    },
-    {
-      name: "Jace",
-      distance: 13,
-      time: "53 min",
-      id: "3433434",
-      status: "body",
-      lat: 18.0187,
-      long: -76.7445,
-      phone: "876-398-1968",
-      destLat: 18.004,
-      destLong: -76.856
-    },
-    {
-      name: "Suna",
-      distance: "74",
-      time: "1 hr 13 mins",
-      id: "5342545",
-      status: "body",
-      lat: 17.9422,
-      long: -77.2333,
-      phone: "876-239-1072",
-      destLat: 18.004,
-      destLong: -76.856
-    },
-    {
-      name: "Hugh",
-      distance: 0.7,
-      time: "2 mins",
-      id: "43434641",
-      status: "body",
-      lat: 18.0213,
-      long: -76.7692,
-      phone: "876-438-9431",
-      destLat: 18.004,
-      destLong: -76.856
-    },
-    {
-      name: "Sarah",
-      distance: 0.7,
-      time: "2 mins",
-      id: "43434641",
-      status: "body",
-      lat: 18.0145092,
-      long: -76.7504757,
-      phone: "876-438-9431",
-      destLat: 18.0032,
-      destLong: -76.7452
-    }
+  {
+    name: "Yuki",
+    distance: 5,
+    time: "15 mins",
+    id: "43455654",
+    status: "body",
+    lat: 18.004,
+    long: -76.856,
+    phone: "876-432-1348",
+    destLat: 18.0032,
+    destLong: -76.7452
+  },
+  {
+    name: "Mira",
+    distance: 2,
+    time: "5 mins",
+    id: "4929433",
+    status: "body",
+    lat: 18.0032,
+    long: -76.7452,
+    phone: "876-892-4371",
+    destLat: 18.004,
+    destLong: -76.856
+  },
+  {
+    name: "Jace",
+    distance: 13,
+    time: "53 min",
+    id: "3433434",
+    status: "body",
+    lat: 18.0187,
+    long: -76.7445,
+    phone: "876-398-1968",
+    destLat: 18.004,
+    destLong: -76.856
+  },
+  {
+    name: "Suna",
+    distance: "74",
+    time: "1 hr 13 mins",
+    id: "5342545",
+    status: "body",
+    lat: 17.9422,
+    long: -77.2333,
+    phone: "876-239-1072",
+    destLat: 18.004,
+    destLong: -76.856
+  },
+  {
+    name: "Hugh",
+    distance: 0.7,
+    time: "2 mins",
+    id: "43434641",
+    status: "body",
+    lat: 18.0213,
+    long: -76.7692,
+    phone: "876-438-9431",
+    destLat: 18.004,
+    destLong: -76.856
+  },
+  {
+    name: "Sarah",
+    distance: 0.7,
+    time: "2 mins",
+    id: "43434641",
+    status: "body",
+    lat: 18.0145092,
+    long: -76.7504757,
+    phone: "876-438-9431",
+    destLat: 18.0032,
+    destLong: -76.7452
+  }
   ];
   constructor(
     public navCtrl: NavController,
@@ -109,10 +117,20 @@ export class ListPage {
     public toastCtrl: ToastController,
     public load: LoadingController,
     public alertCtrl: AlertController,
-    public auth: AngularFireAuth
-  ) {
+    public auth: AngularFireAuth,
+    public angualrDB: AngularFireDatabase
+    ) {
     // If we navigated to this page, we will have an item available as a nav param
     menu.swipeEnable(false);
+
+    //this.user = this.auth.auth.currentUser// temp
+    this.auth.auth.onAuthStateChanged(user => {
+      if(user!=null)
+        this.user = user
+    })
+    
+    
+
     this.people.sort(this.sortpeople);
 
     this.passengers = [];
@@ -127,24 +145,24 @@ export class ListPage {
   }
 
 
-    //For testing
-   current() {
-    let user = this.auth.auth.currentUser;
-    if (user != null){ 
-      console.log(user.email);
-       let alert = this.alertCtrl.create({
-            title: "JSON",
-            subTitle: user.email
-          });
-          alert.present();
+  //For testing
+  current() {
+
+    if (this.user != null){ 
+      console.log(this.user.email);
+      let alert = this.alertCtrl.create({
+        title: "JSON",
+        subTitle: this.user.email
+      });
+      alert.present();
     }
     else {
       console.log("No user");
-       let alert = this.alertCtrl.create({
-            title: "JSON",
-            subTitle: "No user"
-          });
-          alert.present();
+      let alert = this.alertCtrl.create({
+        title: "JSON",
+        subTitle: "No user"
+      });
+      alert.present();
     }
   }
 
@@ -220,22 +238,22 @@ export class ListPage {
     let confirm = this.alertCtrl.create({
       title: "Previous Trip?",
       message:
-        "A previous trip has been detected. Would you like to continue it?",
+      "A previous trip has been detected. Would you like to continue it?",
       buttons: [
-        {
-          text: "Yes",
-          handler: () => {
-            this.navCtrl.push(RoadMap, { passengers: data });
-            console.log("Disagree clicked");
-          }
-        },
-        {
-          text: "No",
-          handler: () => {
-            this.storage.set("previous", false);
-            console.log("No");
-          }
+      {
+        text: "Yes",
+        handler: () => {
+          this.navCtrl.push(RoadMap, { passengers: data });
+          console.log("Disagree clicked");
         }
+      },
+      {
+        text: "No",
+        handler: () => {
+          this.storage.set("previous", false);
+          console.log("No");
+        }
+      }
       ]
     });
     confirm.present();
@@ -251,4 +269,12 @@ export class ListPage {
   invisible() {
     this.show = false;
   }
+
+  locate() {
+
+    let data = {latitude: -57, longitude: 21};
+    this.angualrDB.object('/drivers/'+this.user.uid).update(data);
+
+  }
+
 }
