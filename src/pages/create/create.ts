@@ -1,8 +1,15 @@
 import { Component } from "@angular/core";
 import { NavController, AlertController } from "ionic-angular";
 import { Http, Headers } from "@angular/http";
+import { Observable } from 'rxjs/Observable';
 import "rxjs/add/operator/map";
 import * as CryptoJS from "crypto-js";
+import {
+   AngularFireDatabase,
+  FirebaseListObservable
+} from "angularfire2/database";
+import { AngularFireAuth } from "angularfire2/auth";
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: "page-create",
@@ -16,6 +23,7 @@ export class Create {
   email: string;
   number: string;
   govID: string;
+  user: Observable<firebase.User>;
 
   // variables for colour of text of labels of input fields
   fCol: string;
@@ -24,6 +32,8 @@ export class Create {
   eCol: string;
   nCol: string;
   iCol: string;
+  public userProfile:firebase.database.Reference;
+  public currentUser:firebase.User;
 
   missing: number[] = [];
   posts;
@@ -33,8 +43,71 @@ export class Create {
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,
-    public http: Http
-  ) {}
+    public http: Http,
+    public db: AngularFireDatabase,
+    public authF: AngularFireAuth
+
+
+  ) {
+
+   }
+
+
+  
+
+  test() {
+    // A post entry.
+    var postData = {
+      driverId: "7393PP",
+      driverProfile: {
+        firstname: "John",
+        lastname: "Snow",
+        route: "The Wall to High Garden",
+        vehicle_type: "Dragon"
+      },
+      latitude: "-77.0089",
+      longitude: "18.043"
+    };
+
+     let res = "";
+    this.db.object('/drivers/' + "533"/**postData.driverId*/).subscribe(data => {
+      if (data.driverId == null)
+        res = "Null";
+      else
+        res = JSON.stringify(data);
+  
+  
+});
+    if (res == "Null"){
+    // Get a key for a new Post.
+    
+
+    // Write the new post's data simultaneously in the posts list and the user's post list.
+    var updates = {};
+    updates["/drivers/" + postData.driverId] = postData;
+    let id = postData.driverId
+    
+   //this.db.list('/drivers').update(id,postData);
+   this.authF.auth.createUserWithEmailAndPassword("newestuserfog20096@gmail.com", "89u90mijjadciozoj").then(data => {
+     let alert = this.alertCtrl.create({
+      title: "JSON",
+      subTitle: data.uid
+    });
+    alert.present();
+   }).catch(err => {
+  // Handle Errors here.
+  console.log(err);
+  // ...
+});
+  }
+  else{
+     let alert = this.alertCtrl.create({
+      title: "JSON",
+      subTitle: "Already exists"
+    });
+    alert.present();
+  }
+  }
 
   createUser() {
     if (this.check()) {

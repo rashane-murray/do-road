@@ -19,12 +19,18 @@
 			<ion-label floating>Password</ion-label>
 			<ion-input type="password" [(ngModel)]="password"></ion-input>
 		</ion-item>
+		<ion-item class="text" *ngFor="let item of items | async">
+			<div>{{item.driverId}}</div>
+			<div>{{item.driverProfile.firstname}}</div>
+		</ion-item>
 	</ion-list>
 
 	
 
 	
 	<button ion-button  (click)='check()' clear icon-left> MDL Test </button>
+	<button ion-button  (click)='test()' clear icon-left> Test3  </button>
+	<button ion-button  (click)='test2()' clear icon-left> Test4 </button>
 	<button ion-button  (click)='gps()' clear icon-left> GPS Test </button>
 	<button ion-button  (click)='signed()' clear icon-left> Sign In </button>
 	<button ion-button (click)='cancel()' clear icon-rigth> Back </button>

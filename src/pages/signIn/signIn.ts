@@ -5,13 +5,21 @@ import {
   AlertController,
   MenuController
 } from "ionic-angular";
-
 import { UserPage } from "../userPage/userPage";
 import { HomePage } from "../home/home";
 import { File } from "@ionic-native/file";
 import { Storage } from "@ionic/storage";
 import { Http, Headers } from "@angular/http";
 import "rxjs/add/operator/map";
+import {
+  AngularFireDatabase,
+  FirebaseListObservable
+} from "angularfire2/database";
+import { Observable } from 'rxjs/Observable';
+import "rxjs/add/operator/map";
+import * as CryptoJS from "crypto-js";
+import { AngularFireAuth } from "angularfire2/auth";
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: "page-signin",
@@ -22,6 +30,8 @@ export class SignIn {
   password;
   loader;
   posts: any;
+  items: FirebaseListObservable<any[]>;
+  user: Observable<firebase.User>;
 
   constructor(
     public navCtrl: NavController,
@@ -30,10 +40,37 @@ export class SignIn {
     public alertCtrl: AlertController,
     public storage: Storage,
     public menu: MenuController,
-    public http: Http
+    public http: Http,
+    public db: AngularFireDatabase,
+    public auth: AngularFireAuth
   ) {
     menu.swipeEnable(false);
+    this.items = db.list('/drivers');
+    this.user = auth.authState;
   }
+
+  test() {
+  this.auth.auth.signInWithEmailAndPassword("newestuserfortesting20096@gmail.com", "89u90mijjadciozoj").catch(err => { console.log(err)});
+    
+  }
+
+test2() {
+  let res = "";
+    this.db.object('/drivers/69878906089').subscribe(data => {
+      if (data.driverId == null)
+        res = "Null";
+      else
+        res = JSON.stringify(data);
+  
+  
+});
+    let alert = this.alertCtrl.create({
+      title: "JSON",
+      subTitle: res
+    });
+    alert.present();
+  }
+
 
   signed() {
     this.storage.set("logged", "name");
