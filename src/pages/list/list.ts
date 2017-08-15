@@ -10,6 +10,8 @@ import {
 import { Storage } from "@ionic/storage";
 import { RoadMap } from "../map/map";
 
+import { AngularFireAuth } from "angularfire2/auth";
+
 @Component({
   selector: "page-list",
   templateUrl: "list.html"
@@ -106,7 +108,8 @@ export class ListPage {
     public storage: Storage,
     public toastCtrl: ToastController,
     public load: LoadingController,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public auth: AngularFireAuth
   ) {
     // If we navigated to this page, we will have an item available as a nav param
     menu.swipeEnable(false);
@@ -121,6 +124,28 @@ export class ListPage {
         });
       }
     });
+  }
+
+
+    //For testing
+   current() {
+    let user = this.auth.auth.currentUser;
+    if (user != null){ 
+      console.log(user.email);
+       let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: user.email
+          });
+          alert.present();
+    }
+    else {
+      console.log("No user");
+       let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: "No user"
+          });
+          alert.present();
+    }
   }
 
   //Selects or deselect a user to pickup on the next rip
