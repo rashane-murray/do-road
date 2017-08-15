@@ -15,6 +15,7 @@ import { Storage } from "@ionic/storage";
 import { NativeStorage } from "@ionic-native/native-storage";
 import { Network } from "@ionic-native/network";
 import { Push, PushObject, PushOptions } from "@ionic-native/push";
+import { AngularFireAuth } from "angularfire2/auth";
 
 @Component({
   templateUrl: "app.html"
@@ -40,7 +41,8 @@ export class MyApp {
     public stg: NativeStorage,
     public network: Network,
     public push: Push,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public auth: AngularFireAuth
   ) {
     this.initializeApp();
   }
@@ -58,11 +60,14 @@ export class MyApp {
       this.pages = [{ title: "Logout", component: HomePage }];
 
       // Checks to see if a user was logged in previously
+      let user = this.auth.auth.currentUser;
+
       this.storage
         .get("logged")
         .then(val => {
           console.log(val);
           if (val == null) this.rootPage = HomePage;
+          
           else {
             this.rootPage = UserPage; //Logs user into app
 
@@ -177,6 +182,14 @@ export class MyApp {
   openPage(page) {
     this.nav.setRoot(page.component);
     this.storage.remove("logged");
+    this.auth.auth
+      .signOut()
+      .then(data => {
+        // Sign-out successful.
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   internetCheck() {

@@ -15,11 +15,11 @@ import {
   AngularFireDatabase,
   FirebaseListObservable
 } from "angularfire2/database";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import * as CryptoJS from "crypto-js";
 import { AngularFireAuth } from "angularfire2/auth";
-import * as firebase from 'firebase/app';
+import * as firebase from "firebase/app";
 
 @Component({
   selector: "page-signin",
@@ -45,32 +45,55 @@ export class SignIn {
     public auth: AngularFireAuth
   ) {
     menu.swipeEnable(false);
-    this.items = db.list('/drivers');
+    this.items = db.list("/drivers");
     this.user = auth.authState;
   }
 
-  test() {
-  this.auth.auth.signInWithEmailAndPassword("newestuserfortesting20096@gmail.com", "89u90mijjadciozoj").catch(err => { console.log(err)});
-    
+  login() {
+    if (!this.email || !this.password) {
+      let alert = this.alertCtrl.create({
+        title: "JSON",
+        subTitle: "Blank Field"
+      });
+      alert.present();
+    } else {
+      this.auth.auth
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(data => {
+          this.storage.set("logged", "name");
+          this.navCtrl.setRoot(UserPage);
+        })
+        .catch(err => {
+          console.log(err);
+          let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: err.message
+          });
+          alert.present();
+        });
+    }
   }
 
-test2() {
-  let res = "";
-    this.db.object('/drivers/69878906089').subscribe(data => {
-      if (data.driverId == null)
-        res = "Null";
-      else
-        res = JSON.stringify(data);
-  
-  
-});
-    let alert = this.alertCtrl.create({
-      title: "JSON",
-      subTitle: res
-    });
-    alert.present();
+  //For testing
+  current() {
+    let user = this.auth.auth.currentUser;
+    if (user != null){ 
+      console.log(user.email);
+       let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: user.email
+          });
+          alert.present();
+    }
+    else {
+      console.log("No user");
+       let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: "No user"
+          });
+          alert.present();
+    }
   }
-
 
   signed() {
     this.storage.set("logged", "name");

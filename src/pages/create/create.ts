@@ -1,16 +1,18 @@
 import { Component } from "@angular/core";
 import { NavController, AlertController } from "ionic-angular";
 import { Http, Headers } from "@angular/http";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import * as CryptoJS from "crypto-js";
 import {
-   AngularFireDatabase,
+  AngularFireDatabase,
   FirebaseListObservable
 } from "angularfire2/database";
 import { AngularFireAuth } from "angularfire2/auth";
-import * as firebase from 'firebase/app';
+import * as firebase from "firebase/app";
+import { Geolocation } from "@ionic-native/geolocation";
 
+declare var navigator;
 @Component({
   selector: "page-create",
   templateUrl: "create.html"
@@ -24,7 +26,10 @@ export class Create {
   number: string;
   govID: string;
   user: Observable<firebase.User>;
+  route: string;
 
+  lat;
+  long;
   // variables for colour of text of labels of input fields
   fCol: string;
   lCol: string;
@@ -32,8 +37,9 @@ export class Create {
   eCol: string;
   nCol: string;
   iCol: string;
-  public userProfile:firebase.database.Reference;
-  public currentUser:firebase.User;
+  rCol: string;
+  public userProfile: firebase.database.Reference;
+  public currentUser: firebase.User;
 
   missing: number[] = [];
   posts;
@@ -45,75 +51,65 @@ export class Create {
     public alertCtrl: AlertController,
     public http: Http,
     public db: AngularFireDatabase,
-    public authF: AngularFireAuth
-
-
+    public authF: AngularFireAuth,
+    public geolocation: Geolocation
   ) {
+    this.locate();
+  }
 
-   }
-
-
-  
-
-  test() {
+  signUp() {
+    //uses Firebase
     // A post entry.
+
+    //data to be stored in database
     var postData = {
-      driverId: "7393PP",
+      driverId: "",
       driverProfile: {
-        firstname: "John",
-        lastname: "Snow",
-        route: "The Wall to High Garden",
-        vehicle_type: "Dragon"
+        firstname: this.fName,
+        lastname: this.lName,
+        route: this.route,
+        number: this.number,
+        govID: this.govID
+        //vehicle_type: "Dragon"
       },
-      latitude: "-77.0089",
-      longitude: "18.043"
+      latitude: this.lat,
+      longitude: this.long
     };
 
-     let res = "";
-    this.db.object('/drivers/' + "533"/**postData.driverId*/).subscribe(data => {
-      if (data.driverId == null)
-        res = "Null";
-      else
-        res = JSON.stringify(data);
-  
-  
-});
-    if (res == "Null"){
-    // Get a key for a new Post.
-    
+    //Tries to create user
+    this.authF.auth
+      .createUserWithEmailAndPassword(this.email, this.pass)
+      .then(data => {
+        //User created
+        postData.driverId = data.uid;
 
-    // Write the new post's data simultaneously in the posts list and the user's post list.
-    var updates = {};
-    updates["/drivers/" + postData.driverId] = postData;
-    let id = postData.driverId
-    
-   //this.db.list('/drivers').update(id,postData);
-   this.authF.auth.createUserWithEmailAndPassword("newestuserfog20096@gmail.com", "89u90mijjadciozoj").then(data => {
-     let alert = this.alertCtrl.create({
-      title: "JSON",
-      subTitle: data.uid
-    });
-    alert.present();
-   }).catch(err => {
-  // Handle Errors here.
-  console.log(err);
-  // ...
-});
-  }
-  else{
-     let alert = this.alertCtrl.create({
-      title: "JSON",
-      subTitle: "Already exists"
-    });
-    alert.present();
-  }
+        let id = postData.driverId;
+        this.db.list("/drivers").update(id, postData); //Adds data to database
+        let alert = this.alertCtrl.create({
+          title: "JSON",
+          subTitle: "Registered Succesfully!"
+        });
+        alert.present();
+      })
+      .catch(err => {
+        // Handle Errors here.
+        console.log(err);
+        let alert = this.alertCtrl.create({
+          title: "JSON",
+          subTitle: err.message
+        });
+        alert.present();
+        // ...
+      });
   }
 
   createUser() {
+    //usess mdl
     if (this.check()) {
       console.log("Worked");
       this.iCol = "#999";
-      this.register(); //Add new user to database
+      //this.register(); //Add new user to database
+      this.signUp();
     } else {
       this.mark();
       let alert = this.alertCtrl.create({
@@ -173,6 +169,7 @@ export class Create {
     if (!this.email) this.missing.push(4);
     if (!this.number) this.missing.push(5);
     if (!this.govID) this.missing.push(6);
+    if (!this.route) this.missing.push(7);
     console.log(this.missing);
     if (this.missing.length == 0) return true;
     else return false;
@@ -191,6 +188,7 @@ export class Create {
     else if (n == 4) this.eCol = "#f53d3d";
     else if (n == 5) this.nCol = "#f53d3d";
     else if (n == 6) this.iCol = "#f53d3d";
+    else if (n == 7) this.rCol = "#f53d3d";
   }
 
   //Revert highlighted field to normal color when filled in correctly
@@ -201,6 +199,7 @@ export class Create {
     this.eCol = "#999";
     this.nCol = "#999";
     this.iCol = "#999";
+    this.rCol = "#999";
   }
 
   //encrypts password
@@ -212,5 +211,17 @@ export class Create {
     var words2 = CryptoJS.enc.Base64.parse(obj);
     var textString = CryptoJS.enc.Utf8.stringify(words2);
     console.log(textString);*/
+  }
+
+  locate() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.lat = position.coords.latitude;
+        this.long = position.coords.longitude;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 }
