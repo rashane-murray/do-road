@@ -1,9 +1,18 @@
 import { Component } from "@angular/core";
 import { NavController, AlertController } from "ionic-angular";
 import { Http, Headers } from "@angular/http";
+import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import * as CryptoJS from "crypto-js";
+import {
+  AngularFireDatabase,
+  FirebaseListObservable
+} from "angularfire2/database";
+import { AngularFireAuth } from "angularfire2/auth";
+import * as firebase from "firebase/app";
+import { Geolocation } from "@ionic-native/geolocation";
 
+declare var navigator;
 @Component({
   selector: "page-create",
   templateUrl: "create.html"
@@ -16,7 +25,11 @@ export class Create {
   email: string;
   number: string;
   govID: string;
+  user: Observable<firebase.User>;
+  route: string;
 
+  lat;
+  long;
   // variables for colour of text of labels of input fields
   fCol: string;
   lCol: string;
@@ -24,6 +37,9 @@ export class Create {
   eCol: string;
   nCol: string;
   iCol: string;
+  rCol: string;
+  public userProfile: firebase.database.Reference;
+  public currentUser: firebase.User;
 
   missing: number[] = [];
   posts;
@@ -33,14 +49,67 @@ export class Create {
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,
-    public http: Http
-  ) {}
+    public http: Http,
+    public db: AngularFireDatabase,
+    public authF: AngularFireAuth,
+    public geolocation: Geolocation
+  ) {
+    this.locate();
+  }
+
+  signUp() {
+    //uses Firebase
+    // A post entry.
+
+    //data to be stored in database
+    var postData = {
+      driverId: "",
+      driverProfile: {
+        firstname: this.fName,
+        lastname: this.lName,
+        route: this.route,
+        number: this.number,
+        govID: this.govID
+        //vehicle_type: "Dragon"
+      },
+      latitude: this.lat,
+      longitude: this.long
+    };
+
+    //Tries to create user
+    this.authF.auth
+      .createUserWithEmailAndPassword(this.email, this.pass)
+      .then(data => {
+        //User created
+        postData.driverId = data.uid;
+
+        let id = postData.driverId;
+        this.db.list("/drivers").update(id, postData); //Adds data to database
+        let alert = this.alertCtrl.create({
+          title: "JSON",
+          subTitle: "Registered Succesfully!"
+        });
+        alert.present();
+      })
+      .catch(err => {
+        // Handle Errors here.
+        console.log(err);
+        let alert = this.alertCtrl.create({
+          title: "JSON",
+          subTitle: err.message
+        });
+        alert.present();
+        // ...
+      });
+  }
 
   createUser() {
+    //usess mdl
     if (this.check()) {
       console.log("Worked");
       this.iCol = "#999";
-      this.register(); //Add new user to database
+      //this.register(); //Add new user to database
+      this.signUp();
     } else {
       this.mark();
       let alert = this.alertCtrl.create({
@@ -100,6 +169,7 @@ export class Create {
     if (!this.email) this.missing.push(4);
     if (!this.number) this.missing.push(5);
     if (!this.govID) this.missing.push(6);
+    if (!this.route) this.missing.push(7);
     console.log(this.missing);
     if (this.missing.length == 0) return true;
     else return false;
@@ -118,6 +188,7 @@ export class Create {
     else if (n == 4) this.eCol = "#f53d3d";
     else if (n == 5) this.nCol = "#f53d3d";
     else if (n == 6) this.iCol = "#f53d3d";
+    else if (n == 7) this.rCol = "#f53d3d";
   }
 
   //Revert highlighted field to normal color when filled in correctly
@@ -128,6 +199,7 @@ export class Create {
     this.eCol = "#999";
     this.nCol = "#999";
     this.iCol = "#999";
+    this.rCol = "#999";
   }
 
   //encrypts password
@@ -139,5 +211,17 @@ export class Create {
     var words2 = CryptoJS.enc.Base64.parse(obj);
     var textString = CryptoJS.enc.Utf8.stringify(words2);
     console.log(textString);*/
+  }
+
+  locate() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.lat = position.coords.latitude;
+        this.long = position.coords.longitude;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 }
