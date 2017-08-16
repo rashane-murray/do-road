@@ -11,6 +11,12 @@ import { Platform } from "ionic-angular";
 import { Geolocation } from "@ionic-native/geolocation";
 import { TextToSpeech } from "@ionic-native/text-to-speech";
 import { Storage } from "@ionic/storage";
+import {
+  AngularFireDatabase,
+  FirebaseListObservable
+} from "angularfire2/database";
+import { AngularFireAuth } from "angularfire2/auth";
+import * as firebase from "firebase/app";
 
 declare var google, navigator;
 
@@ -45,6 +51,7 @@ export class RoadMap {
   passengers;
   directResults;
   pickup;
+  user;
 
   constructor(
     public navCtrl: NavController,
@@ -54,8 +61,14 @@ export class RoadMap {
     public toastCtrl: ToastController,
     public storage: Storage,
     public alertCtrl: AlertController,
-    public params: NavParams
+    public params: NavParams,
+    public angularDB: AngularFireDatabase,
+    public auth: AngularFireAuth
   ) {
+    this.auth.auth.onAuthStateChanged(user => {
+      if(user!=null)
+        this.user = user
+    })
     this.platform.ready().then(() => this.onPlatformReady());
   }
 
@@ -307,10 +320,14 @@ export class RoadMap {
   pos() {
     navigator.geolocation.getCurrentPosition(
       position => {
+
         this.currentLatLng = new google.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
+           
         );
+        let data = {latitude: position.latitude, longitude: position.longitude};
+          this.angularDB.object('/drivers/'+this.user.uid).update(data);
       },
       err => {
         console.log(err);

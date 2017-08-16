@@ -16,6 +16,10 @@ import { NativeStorage } from "@ionic-native/native-storage";
 import { Network } from "@ionic-native/network";
 import { Push, PushObject, PushOptions } from "@ionic-native/push";
 import { AngularFireAuth } from "angularfire2/auth";
+import {
+  AngularFireDatabase,
+  FirebaseListObservable
+} from "angularfire2/database";
 
 @Component({
   templateUrl: "app.html"
@@ -28,6 +32,7 @@ export class MyApp {
   loader;
   state;
   backgroundLocation;
+  user;
 
   constructor(
     public platform: Platform,
@@ -42,8 +47,9 @@ export class MyApp {
     public network: Network,
     public push: Push,
     public alertCtrl: AlertController,
-    public auth: AngularFireAuth
-  ) {
+    public auth: AngularFireAuth,
+    public angularDB: AngularFireDatabase
+    ) {
     this.initializeApp();
   }
 
@@ -60,48 +66,45 @@ export class MyApp {
       this.pages = [{ title: "Logout", component: HomePage }];
 
       // Checks to see if a user was logged in previously
-      let user = this.auth.auth.currentUser;
+      this.auth.auth.onAuthStateChanged(user => {
+        if(user!=null){
+          this.user = user
+          console.log(user.displayName);
+          this.rootPage = UserPage; //Logs user into app
 
-      this.storage
-        .get("logged")
-        .then(val => {
-          console.log(val);
-          if (val == null) this.rootPage = HomePage;
-          
-          else {
-            this.rootPage = UserPage; //Logs user into app
+          this.storage
+          .get("autoLocate")
+          .then(val => {
+            if (val) {
+              this.backgroundLocation = "ON";
+              this.locate();
+            } else this.backgroundLocation = "OFF";
+          })
+          .catch(err => {
+            //Turns on background location tracker
+            this.storage.set("autoLocate", true);
+            this.backgroundLocation = "ON";
+            this.locate;
+          });
 
-            this.storage
-              .get("autoLocate")
-              .then(val => {
-                if (val) {
-                  this.backgroundLocation = "ON";
-                  this.locate();
-                } else this.backgroundLocation = "OFF";
-              })
-              .catch(err => {
-                //Turns on background location tracker
-                this.storage.set("autoLocate", true);
-                this.backgroundLocation = "ON";
-                this.locate;
-              });
+          this.storage
+          //Checks drivers last availibilty status
+          .get("status")
+          .then(val => {
+            if (val) this.state = "Available";
+            else this.state = "Unavailable";
+          })
+          .catch(err => {
+            this.state = "Available";
+            this.storage.set("status", true);
+          });
+        }
+        else
+          this.rootPage = HomePage;
 
-            this.storage
-              //Checks drivers last availibilty status
-              .get("status")
-              .then(val => {
-                if (val) this.state = "Available";
-                else this.state = "Unavailable";
-              })
-              .catch(err => {
-                this.state = "Available";
-                this.storage.set("status", true);
-              });
-          }
-        })
-        .catch(err => {
-          console.log("Not logged in");
-        });
+      })
+
+
 
       this.loader.dismiss();
     });
@@ -138,8 +141,8 @@ export class MyApp {
     });
 
     pushObject
-      .on("error")
-      .subscribe(error => alert("Error with Push plugin" + error));
+    .on("error")
+    .subscribe(error => alert("Error with Push plugin" + error));
   }
 
   //Starts the background location tracking
@@ -148,24 +151,18 @@ export class MyApp {
       desiredAccuracy: 10,
       stationaryRadius: 20,
       distanceFilter: 30,
+      interval: 10000,
       debug: false, //  enable this hear sounds for background-geolocation life-cycle.
       stopOnTerminate: false // enable this to clear background location settings when the app terminates
     };
 
     this.bkgrnd
-      .configure(config)
-      .subscribe((location: BackgroundGeolocationResponse) => {
-        let f = "" + location.latitude;
-        let lon = "" + location.longitude;
-        this.toasting(f);
-
-        this.stg.setItem("lat", f).then(() => this.toasting("Work")), (
-          error //Stores driver's latitude
-        ) => this.toasting("Failed");
-        this.stg
-          .setItem("long", lon) //Stores driver's longittude
-          .then(() => this.toasting("Work")), error => this.toasting("Failed");
-      });
+    .configure(config)
+    .subscribe((location: BackgroundGeolocationResponse) => {
+      let lat = location.latitude;
+      let long = location.longitude;
+      this.updateLocation(lat, long)
+    });
 
     this.bkgrnd.start();
   }
@@ -183,13 +180,13 @@ export class MyApp {
     this.nav.setRoot(page.component);
     this.storage.remove("logged");
     this.auth.auth
-      .signOut()
-      .then(data => {
-        // Sign-out successful.
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    .signOut()
+    .then(data => {
+      // Sign-out successful.
+    })
+    .catch(error => {
+      console.log(error);
+    });
   }
 
   internetCheck() {
@@ -236,5 +233,11 @@ export class MyApp {
       this.state = "Available";
       this.storage.set("status", true);
     }
+  }
+
+   updateLocation(lat, long) {
+
+    let data = {latitude: lat, longitude: long};
+    this.angularDB.object('/drivers/'+this.user.uid).update(data);
   }
 }
