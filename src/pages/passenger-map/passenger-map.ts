@@ -12,12 +12,7 @@ import { Storage } from "@ionic/storage";
 
 declare var google, navigator;
 
-/**
- * Generated class for the PassengerMapPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+
 @IonicPage()
 @Component({
   selector: "page-passenger-map",
@@ -31,7 +26,7 @@ export class PassengerMapPage {
 
   markerArray = [];
 
-  marker;
+  marker:any;
 
   waiting = [
     {

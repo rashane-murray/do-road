@@ -21,7 +21,6 @@ import * as CryptoJS from "crypto-js";
 import { AngularFireAuth } from "angularfire2/auth";
 import * as firebase from "firebase/app";
 
-
 @Component({
   selector: "page-signin",
   templateUrl: "signIn.html"
@@ -34,7 +33,6 @@ export class SignIn {
   items: FirebaseListObservable<any[]>;
   user: Observable<firebase.User>;
 
-
   constructor(
     public navCtrl: NavController,
     public load: LoadingController,
@@ -45,7 +43,7 @@ export class SignIn {
     public http: Http,
     public db: AngularFireDatabase,
     public auth: AngularFireAuth
-    ) {
+  ) {
     menu.swipeEnable(false);
     this.items = db.list("/drivers");
     this.user = auth.authState;
@@ -60,34 +58,33 @@ export class SignIn {
       alert.present();
     } else {
       this.auth.auth
-      .signInWithEmailAndPassword(this.email, this.password)
-      .then(data => {
-        this.storage.set("logged", "name");
-        this.navCtrl.setRoot(UserPage);
-      })
-      .catch(err => {
-        console.log(err);
-        let alert = this.alertCtrl.create({
-          title: "JSON",
-          subTitle: err.message
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(data => {
+          this.storage.set("logged", "name");
+          this.navCtrl.setRoot(UserPage);
+        })
+        .catch(err => {
+          console.log(err);
+          let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: err.message
+          });
+          alert.present();
         });
-        alert.present();
-      });
     }
   }
 
   //For testing
   current() {
     let user = this.auth.auth.currentUser;
-    if (user != null){ 
+    if (user != null) {
       console.log(user.email);
       let alert = this.alertCtrl.create({
         title: "JSON",
         subTitle: user.email
       });
       alert.present();
-    }
-    else {
+    } else {
       console.log("No user");
       let alert = this.alertCtrl.create({
         title: "JSON",
@@ -112,28 +109,28 @@ export class SignIn {
     //http://posttestserver.com/post.php
     //http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/login/driver
     this.http
-    .post(
-      "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/login/driver",
-      JSON.stringify(dat),
-      { headers: headers }
+      .post(
+        "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/login/driver",
+        JSON.stringify(dat),
+        { headers: headers }
       )
-    .subscribe(
-      data => {
-        this.posts = data;
+      .subscribe(
+        data => {
+          this.posts = data;
 
-        let alert = this.alertCtrl.create({
-          title: "JSON",
-          subTitle: this.posts
-        });
-        alert.present();
-      },
-      err => {
-        let alert = this.alertCtrl.create({
-          title: "JSON",
-          subTitle: err
-        });
-        alert.present();
-      }
+          let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: this.posts
+          });
+          alert.present();
+        },
+        err => {
+          let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: err
+          });
+          alert.present();
+        }
       );
   }
 
@@ -155,28 +152,28 @@ export class SignIn {
     //http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/login/driver
     //192.241.203.121:3000
     this.http
-    .post(
-      "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/drivercoordinates",
-      JSON.stringify(coord),
-      { headers: headers }
+      .post(
+        "http://nylon.palisadoes.org:3000/mdl/api/v1/mobile/post/drivercoordinates",
+        JSON.stringify(coord),
+        { headers: headers }
       )
-    .subscribe(
-      data => {
-        this.posts = data;
+      .subscribe(
+        data => {
+          this.posts = data;
 
-        let alert = this.alertCtrl.create({
-          title: "JSON",
-          subTitle: this.posts
-        });
-        alert.present();
-      },
-      err => {
-        let alert = this.alertCtrl.create({
-          title: "JSON",
-          subTitle: err
-        });
-        alert.present();
-      }
+          let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: this.posts
+          });
+          alert.present();
+        },
+        err => {
+          let alert = this.alertCtrl.create({
+            title: "JSON",
+            subTitle: err
+          });
+          alert.present();
+        }
       );
   }
 
@@ -204,6 +201,4 @@ export class SignIn {
     });
     this.loader.present();
   }
-
- 
 }

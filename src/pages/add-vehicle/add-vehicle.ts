@@ -25,6 +25,7 @@ export class AddVehiclePage {
 	capacity: string;
 	colour: string;
 	license: string;
+	type: string;
 
 	// variables for colour of text of labels of input fields
 	bCol: string;
@@ -32,6 +33,7 @@ export class AddVehiclePage {
 	cCol: string;
 	colCol: string;
 	lCol: string;
+	tCol: string
 	vehicles = [];
 
 	errorTitle: string = "Could Not Be Completed!";
@@ -53,7 +55,7 @@ export class AddVehiclePage {
 					this.vehicles = data;
 				}
 			})
-			.catch(err => this.toasting(err));
+			.catch(err => console.log(err));
 	}
 
 	ionViewDidLoad() {
@@ -68,12 +70,11 @@ export class AddVehiclePage {
 				model: this.model,
 				capacity: this.capacity,
 				colour: this.colour,
-				license: this.license
+				license: this.license,
+				type: this.type,
+				current: false
 			});
-			this.storage
-				.set("car", this.vehicles)
-				.then(data => this.toasting(data))
-				.catch(err => this.toasting(err));
+			this.storage.set("car", this.vehicles).catch(err => console.log(err));
 			console.log("Worked");
 			this.navCtrl.setRoot(VehiclesPage);
 		} else {
@@ -99,6 +100,7 @@ export class AddVehiclePage {
 		else if (n == 3) this.cCol = "#f53d3d";
 		else if (n == 4) this.colCol = "#f53d3d";
 		else if (n == 5) this.lCol = "#f53d3d";
+		else if (n == 6) this.tCol = "#f53d3d";
 	}
 
 	//Checks if any field is not filled in
@@ -109,6 +111,7 @@ export class AddVehiclePage {
 		if (!this.capacity) this.missing.push(3);
 		if (!this.colour) this.missing.push(4);
 		if (!this.license) this.missing.push(5);
+		if(!this.type) this.missing.push(6);
 
 		console.log(this.missing);
 		if (this.missing.length == 0) return true;
@@ -122,14 +125,7 @@ export class AddVehiclePage {
 		this.cCol = "#999";
 		this.colCol = "#999";
 		this.lCol = "#999";
+		this.tCol = "#999";
 	}
 
-	toasting(s) {
-		let toast = this.toastCtrl.create({
-			message: s,
-			duration: 3000,
-			position: "top"
-		});
-		toast.present();
-	}
 }
