@@ -9,6 +9,11 @@ import {
 import { Storage } from "@ionic/storage";
 import { AddVehiclePage } from "../add-vehicle/add-vehicle";
 import { VehicleViewPage } from "../vehicle-view/vehicle-view";
+import {
+  AngularFireDatabase,
+  FirebaseListObservable
+} from "angularfire2/database";
+import { AngularFireAuth } from "angularfire2/auth";
 
 /**
  * Generated class for the VehiclesPage page.
@@ -26,13 +31,16 @@ export class VehiclesPage {
   show: boolean = false;
   info = "";
   car;
+  user;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public storage: Storage,
     public toastCtrl: ToastController,
-    public action: ActionSheetController
+    public action: ActionSheetController,
+    public angularDB: AngularFireDatabase,
+    public auth: AngularFireAuth
   ) {
     let status = this.storage.get("car");
     this.storage
@@ -41,13 +49,16 @@ export class VehiclesPage {
         this.cars = data; //Loads stored cars
         console.log(data);
       })
-      .catch(err => this.toasting(err));
+      .catch(err => console.log(err));
     if (this.cars == null) {
       this.cars = [];
       this.cars.push({ brand: "No vehicles added" });
       console.log(this.cars[0].brand);
       console.log("pushed");
     }
+    this.auth.auth.onAuthStateChanged(user => {
+      if (user != null) this.user = user;
+    });
   }
 
   ionViewDidLoad() {
@@ -57,15 +68,6 @@ export class VehiclesPage {
   //Goes to page for adding a new car
   add() {
     this.navCtrl.push(AddVehiclePage);
-  }
-
-  toasting(s) {
-    let toast = this.toastCtrl.create({
-      message: s,
-      duration: 3000,
-      position: "top"
-    });
-    toast.present();
   }
 
   //Deletes car from inventory
@@ -82,17 +84,6 @@ export class VehiclesPage {
       title: "Options",
       buttons: [
         {
-          text: "Delete",
-          role: "destructive",
-          handler: () => {
-            this.remove(car);
-            this.storage
-              .set("car", this.cars)
-              .then(data => this.toasting(data))
-              .catch(err => this.toasting(err));
-          }
-        },
-        {
           text: "Edit",
           handler: () => {
             this.navCtrl.setRoot(VehicleViewPage, {
@@ -107,6 +98,20 @@ export class VehiclesPage {
             this.car = car; //Selects car to show info for
             this.show = true; //Makes card displaying car info visible
           }
+        },
+        {
+          text: "Delete",
+          role: "destructive",
+          handler: () => {
+            this.remove(car);
+            this.storage.set("car", this.cars).catch(err => console.log(err));
+          }
+        },
+        {
+          text: "Set as current vehicle",
+          handler: () => {
+            this.setCurrentVehicle(car);
+          }
         }
       ]
     });
@@ -116,5 +121,22 @@ export class VehiclesPage {
   //toggles visibilty of card shwoing car info
   invisible() {
     this.show = false;
+  }
+
+  setCurrentVehicle(car) {
+    car.current = true;
+    this.storage.set("primary", car).catch(err => console.log(err));
+    this.storage.set("car", this.cars).catch(err => console.log(err));
+    let data = {
+      vehicle: {
+        brand: car.brand,
+        model: car.model,
+        type: car.type,
+        colour: car.colour,
+        capacity: car.capacity,
+        "license plate": car.license
+      }
+    };
+    this.angularDB.object("/drivers/" + this.user.uid).update(data);
   }
 }

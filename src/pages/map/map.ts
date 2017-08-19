@@ -326,7 +326,7 @@ export class RoadMap {
           position.coords.longitude
            
         );
-        let data = {latitude: position.latitude, longitude: position.longitude};
+        let data = {latitude: position.coords.latitude, longitude: position.coords.longitude};
           this.angularDB.object('/drivers/'+this.user.uid).update(data);
       },
       err => {

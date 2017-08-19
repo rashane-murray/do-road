@@ -49,7 +49,7 @@ export class MyApp {
     public alertCtrl: AlertController,
     public auth: AngularFireAuth,
     public angularDB: AngularFireDatabase
-    ) {
+  ) {
     this.initializeApp();
   }
 
@@ -66,48 +66,54 @@ export class MyApp {
       this.pages = [{ title: "Logout", component: HomePage }];
 
       // Checks to see if a user was logged in previously
-      this.auth.auth.onAuthStateChanged(user => {
-        if(user!=null){
-          this.user = user
-          console.log(user.displayName);
-          this.rootPage = UserPage; //Logs user into app
-
-          this.storage
-          .get("autoLocate")
-          .then(val => {
-            if (val) {
-              this.backgroundLocation = "ON";
-              this.locate();
-            } else this.backgroundLocation = "OFF";
-          })
-          .catch(err => {
-            //Turns on background location tracker
-            this.storage.set("autoLocate", true);
-            this.backgroundLocation = "ON";
-            this.locate;
-          });
-
-          this.storage
-          //Checks drivers last availibilty status
-          .get("status")
-          .then(val => {
-            if (val) this.state = "Available";
-            else this.state = "Unavailable";
-          })
-          .catch(err => {
-            this.state = "Available";
-            this.storage.set("status", true);
-          });
-        }
-        else
-          this.rootPage = HomePage;
-
-      })
-
-
+      this.checkLogin();
 
       this.loader.dismiss();
     });
+  }
+
+  checkLogin() {
+    this.auth.auth.onAuthStateChanged(user => {
+      if (user != null) {
+        this.user = user;
+        console.log(user.displayName);
+        this.rootPage = UserPage; //Logs user into app
+
+        this.checkAutoLocate(); //Checks if background gps tracker should be on
+
+        this.checkStatus(); //Checks availabilty of driver
+      } else this.rootPage = HomePage;
+    });
+  }
+
+  checkAutoLocate() {
+    this.storage
+      .get("autoLocate")
+      .then(val => {
+        if (val) {
+          this.backgroundLocation = "ON";
+          this.locate();
+        } else this.backgroundLocation = "OFF";
+      })
+      .catch(err => {
+        //Turns on background location tracker
+        this.storage.set("autoLocate", true);
+        this.backgroundLocation = "ON";
+        this.locate;
+      });
+  }
+
+  checkStatus() {
+    this.storage
+      .get("status")
+      .then(val => {
+        if (val) this.state = "Available";
+        else this.state = "Unavailable";
+      })
+      .catch(err => {
+        this.state = "Available";
+        this.storage.set("status", true);
+      });
   }
 
   //Sets up app to recieve push notifications
@@ -141,8 +147,8 @@ export class MyApp {
     });
 
     pushObject
-    .on("error")
-    .subscribe(error => alert("Error with Push plugin" + error));
+      .on("error")
+      .subscribe(error => alert("Error with Push plugin" + error));
   }
 
   //Starts the background location tracking
@@ -157,12 +163,12 @@ export class MyApp {
     };
 
     this.bkgrnd
-    .configure(config)
-    .subscribe((location: BackgroundGeolocationResponse) => {
-      let lat = location.latitude;
-      let long = location.longitude;
-      this.updateLocation(lat, long)
-    });
+      .configure(config)
+      .subscribe((location: BackgroundGeolocationResponse) => {
+        let lat = location.latitude;
+        let long = location.longitude;
+        this.updateLocation(lat, long);
+      });
 
     this.bkgrnd.start();
   }
@@ -180,13 +186,13 @@ export class MyApp {
     this.nav.setRoot(page.component);
     this.storage.remove("logged");
     this.auth.auth
-    .signOut()
-    .then(data => {
-      // Sign-out successful.
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .signOut()
+      .then(data => {
+        // Sign-out successful.
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   internetCheck() {
@@ -229,15 +235,18 @@ export class MyApp {
     if (this.state == "Available") {
       this.state = "Unavailable";
       this.storage.set("status", false);
+      let data = { status: "Unavailable" };
+      this.angularDB.object("/drivers/" + this.user.uid).update(data);
     } else {
       this.state = "Available";
       this.storage.set("status", true);
+      let data = { status: "Available" };
+      this.angularDB.object("/drivers/" + this.user.uid).update(data);
     }
   }
 
-   updateLocation(lat, long) {
-
-    let data = {latitude: lat, longitude: long};
-    this.angularDB.object('/drivers/'+this.user.uid).update(data);
+  updateLocation(lat, long) {
+    let data = { latitude: lat, longitude: long };
+    this.angularDB.object("/drivers/" + this.user.uid).update(data);
   }
 }

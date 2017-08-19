@@ -43,6 +43,11 @@
 		<ion-input type="text" [(ngModel)]="license"></ion-input>
 	</ion-item>
 
+	<ion-item>
+		<ion-label floating [style.color]="tCol">Type</ion-label>
+		<ion-input type="text" [(ngModel)]="type"></ion-input>
+	</ion-item>
+
 	<ion-item no-lines>
 		<button ion-button color="tax" (click)='create()'> Add </button>
 	</ion-item>
